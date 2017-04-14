@@ -1,0 +1,10 @@
+curve.o: curve.c curve.h
+drawings.o: drawings.c font.h util.h curve.h game.h mydata.h drawings.h
+font.o: font.c font.h
+game.o: game.c game.h curve.h mydata.h
+gui.o: gui.c util.h curve.h game.h mydata.h drawings.h menus.h
+main-app.o: main-app.c curve.h util.h game.h mydata.h drawings.h menus.h \
+ gui.h
+menus.o: menus.c util.h curve.h game.h mydata.h drawings.h menus.h
+mydata.o: mydata.c game.h curve.h mydata.h
+util.o: util.c util.h
