@@ -218,7 +218,7 @@ void check_collisions (Game *game, int i)
 				nsy = sy + game->shot_list.shots[i].dy*speed;
 				
 				compute_distant_point_forward (game->track_list.tracks[j].sample_x, game->track_list.tracks[j].sample_y, 
-					game->track_list.tracks[j].marbles[k].t, game->track_list.tracks[j].sample_count, diametre, &nmx, &nmy);
+					game->track_list.tracks[j].marbles[k].t, game->track_list.tracks[j].sample_count, dist, &nmx, &nmy);
 				
 				do_vector_product (mx, my, 1, nmx, nmy, 1, &rmx, &rmy, &rmz);
 				do_vector_product (sx, sy, 1, nsx, nsy, 1, &rsx, &rsy, &rsz);
@@ -240,14 +240,14 @@ void check_collisions (Game *game, int i)
 						if (k == marble_count - 1)
 						{
 							result = compute_distant_point_forward (game->track_list.tracks[j].sample_x, game->track_list.tracks[j].sample_y, 
-							game->track_list.tracks[j].marbles[k].t, game->track_list.tracks[j].sample_count, diametre, &xB, &yB);
+							game->track_list.tracks[j].marbles[k].t, game->track_list.tracks[j].sample_count, (diametre * 2 + 2), &xB, &yB);
 					
 							if (result >= 0.0)
 							{
+								game->track_list.tracks[i].marble_count++;
 								game->track_list.tracks[i].marbles[k + 1].x = xB;
 								game->track_list.tracks[i].marbles[k + 1].y = yB;
 								game->track_list.tracks[i].marbles[k + 1].t = result;
-								game->track_list.tracks[i].marble_count++;
 
 							}
 							game->track_list.tracks[j].marbles[k + 1].color = game->shot_list.shots[i].color;
@@ -263,7 +263,7 @@ void check_collisions (Game *game, int i)
 							for (l = k + 1; l < marble_count; l++)
 							{
 								result = compute_distant_point_forward (game->track_list.tracks[j].sample_x, game->track_list.tracks[j].sample_y, 
-									game->track_list.tracks[j].marbles[l].t, game->track_list.tracks[j].sample_count, diametre, &xB, &yB);
+									game->track_list.tracks[j].marbles[l].t, game->track_list.tracks[j].sample_count, (diametre * 2 + 2), &xB, &yB);
 						
 								if (result >= 0.0)
 								{
@@ -289,13 +289,13 @@ void check_collisions (Game *game, int i)
 					}
 					else // On insere apres
 					{
-						Marble firstMarble = game->track_list.tracks[j].marbles[k + 1];
+						Marble firstMarble = game->track_list.tracks[j].marbles[k];
 						firstMarble.color = game->shot_list.shots[i].color;
 						
 						for (l = k; l < marble_count; l++)
 						{
 							result = compute_distant_point_forward (game->track_list.tracks[j].sample_x, game->track_list.tracks[j].sample_y, 
-								game->track_list.tracks[j].marbles[l].t, game->track_list.tracks[j].sample_count, diametre, &xB, &yB);
+								game->track_list.tracks[j].marbles[l].t, game->track_list.tracks[j].sample_count, (diametre * 2 + 2), &xB, &yB);
 					
 							if (result >= 0.0)
 							{
