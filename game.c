@@ -92,7 +92,6 @@ void move_trains_one_step (Game *game)
 	int i, j;
 	double dist = 1.5;
 	double diametre = 15;
-
 	int count = game->track_list.track_count;
 	
 	int marble_count, first_visible;
@@ -101,7 +100,6 @@ void move_trains_one_step (Game *game)
 	int dist_x, dist_y, dist_tot;
 	for (i = 0; i < count; i++)
 	{
-		
 		marble_count = game->track_list.tracks[i].marble_count;
 		first_visible = game->track_list.tracks[i].first_visible;
 		result = compute_distant_point_forward (game->track_list.tracks[i].sample_x, game->track_list.tracks[i].sample_y, 
@@ -122,7 +120,7 @@ void move_trains_one_step (Game *game)
 		if ( sqrt(dist_x*dist_x + dist_y*dist_y) <= diametre)
 		{
 			dist *= 10;
-			printf ("FINISH\n");
+			//printf ("FINISH\n");
 		}
 		
 		// Pousser les billes apres first_visible
@@ -145,7 +143,7 @@ void move_trains_one_step (Game *game)
 				}
 				
 			}
-			else break;
+			//else break;
 			
 		}
 		
@@ -166,10 +164,8 @@ void move_trains_one_step (Game *game)
 					game->track_list.tracks[i].marbles[first_visible].y = yB;
 					game->track_list.tracks[i].marbles[first_visible].t = result;
 				}
-			}
-				
+			}	
 		}
-		
 	}
 }
 
