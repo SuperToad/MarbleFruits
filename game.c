@@ -99,13 +99,11 @@ void move_trains_one_step (Game *game)
 	double result;
 	double xB, yB;
 	int dist_x, dist_y, dist_tot;
-	//printf ("count : %d\n", count);
 	for (i = 0; i < count; i++)
 	{
 		
 		marble_count = game->track_list.tracks[i].marble_count;
 		first_visible = game->track_list.tracks[i].first_visible;
-		//printf ("count : %d first_visible : %d\n", i, first_visible);
 		result = compute_distant_point_forward (game->track_list.tracks[i].sample_x, game->track_list.tracks[i].sample_y, 
 			game->track_list.tracks[i].marbles[first_visible].t, game->track_list.tracks[i].sample_count, dist, &xB, &yB);
 		
@@ -116,18 +114,15 @@ void move_trains_one_step (Game *game)
 			game->track_list.tracks[i].marbles[first_visible].t = result;
 			if (i > 0)
 				printf ("x : %lf y : %lf\n", xB, yB);
-		}
-		
+		}	
 		
 		dist_x = game->track_list.tracks[i].marbles[marble_count - 1].x - game->track_list.tracks[i].sample_x[game->track_list.tracks[i].sample_count - 1];
 		dist_y = game->track_list.tracks[i].marbles[marble_count - 1].y - game->track_list.tracks[i].sample_y[game->track_list.tracks[i].sample_count - 1];
-		
-		//printf ("arrivee : %lf %lf\n", sqrt(dist_x*dist_x + dist_y*dist_y));
-		//printf ("dist : %lf\n", sqrt(dist_x*dist_x + dist_y*dist_y));
+
 		if ( sqrt(dist_x*dist_x + dist_y*dist_y) <= diametre)
 		{
 			dist *= 10;
-			//printf ("FINISH\n");
+			printf ("FINISH\n");
 		}
 		
 		// Pousser les billes apres first_visible
@@ -137,7 +132,7 @@ void move_trains_one_step (Game *game)
 			dist_y = game->track_list.tracks[i].marbles[j].y - game->track_list.tracks[i].marbles[j - 1].y;
 			dist_tot = dist_x*dist_x + dist_y*dist_y;
 			// Arreter des que la bille est plus loin qu'un diametre
-			if ( sqrt(dist_tot) != diametre)
+			if ( dist_tot < (diametre*2)*(diametre*2))
 			{
 				// pousser d'un diametre de bille
 				result = compute_distant_point_forward (game->track_list.tracks[i].sample_x, game->track_list.tracks[i].sample_y, 
@@ -235,12 +230,12 @@ void check_collisions (Game *game, int i)
 					
 					double xB, yB;
 					int result;
-					if (p > 0) // On insere la marble avant
+					if (p >= 0) // On insere la marble avant
 					{
 						if (k == marble_count - 1)
 						{
 							result = compute_distant_point_forward (game->track_list.tracks[j].sample_x, game->track_list.tracks[j].sample_y, 
-							game->track_list.tracks[j].marbles[k].t, game->track_list.tracks[j].sample_count, (diametre * 2 + 2), &xB, &yB);
+							game->track_list.tracks[j].marbles[k].t, game->track_list.tracks[j].sample_count, diametre, &xB, &yB);
 					
 							if (result >= 0.0)
 							{
@@ -252,7 +247,6 @@ void check_collisions (Game *game, int i)
 							}
 							game->track_list.tracks[j].marbles[k + 1].color = game->shot_list.shots[i].color;
 							
-							//memmove (g->shot_list.shots+shot_id, g->shot_list.shots+shot_id+1, sizeof(Shot)*(g->shot_list.shot_count-1-shot_id));
 							memmove (game->shot_list.shots+i, game->shot_list.shots+i+1, 
 								sizeof(Shot)*(game->shot_list.shot_count-1-i));
 							game->shot_list.shot_count--;
@@ -263,7 +257,7 @@ void check_collisions (Game *game, int i)
 							for (l = k + 1; l < marble_count; l++)
 							{
 								result = compute_distant_point_forward (game->track_list.tracks[j].sample_x, game->track_list.tracks[j].sample_y, 
-									game->track_list.tracks[j].marbles[l].t, game->track_list.tracks[j].sample_count, (diametre * 2 + 2), &xB, &yB);
+									game->track_list.tracks[j].marbles[l].t, game->track_list.tracks[j].sample_count, diametre, &xB, &yB);
 						
 								if (result >= 0.0)
 								{
@@ -274,18 +268,17 @@ void check_collisions (Game *game, int i)
 								}
 							}
 							
-							memmove (game->track_list.tracks[j].marbles + k + 2,game->track_list.tracks[j].marbles + k + 1, 
-								sizeof (Marble)*(marble_count -k));
+							memmove (game->track_list.tracks[j].marbles + k + 2, game->track_list.tracks[j].marbles + k + 1, 
+								sizeof (Marble)*(marble_count - k + 1));
 							game->track_list.tracks[j].marble_count++;
 
 							firstMarble.color = game->shot_list.shots[i].color;
 							game->track_list.tracks[j].marbles[k + 1] = firstMarble;
-							memmove (game->shot_list.shots+i, game->shot_list.shots+i+1, 
-								sizeof(Shot)*(game->shot_list.shot_count-1-i));
+							memmove (game->shot_list.shots + i, game->shot_list.shots + i + 1, 
+								sizeof(Shot)*(game->shot_list.shot_count - 1 - i));
 							game->shot_list.shot_count--;
 						}
 						
-						//memmove (game->shot_list.shots + i, game->shot_list.shots + i + 1, sizeof(Shot)*(game->shot_list.shot_count - i - 1));
 					}
 					else // On insere apres
 					{
@@ -295,7 +288,7 @@ void check_collisions (Game *game, int i)
 						for (l = k; l < marble_count; l++)
 						{
 							result = compute_distant_point_forward (game->track_list.tracks[j].sample_x, game->track_list.tracks[j].sample_y, 
-								game->track_list.tracks[j].marbles[l].t, game->track_list.tracks[j].sample_count, (diametre * 2 + 2), &xB, &yB);
+								game->track_list.tracks[j].marbles[l].t, game->track_list.tracks[j].sample_count, diametre, &xB, &yB);
 					
 							if (result >= 0.0)
 							{
@@ -307,7 +300,7 @@ void check_collisions (Game *game, int i)
 						}
 						game->track_list.tracks[i].marble_count++;
 						memmove (game->track_list.tracks[j].marbles + k + 1,game->track_list.tracks[j].marbles + k, 
-							sizeof (Marble)*(marble_count - k - 1));
+							sizeof (Marble)*(marble_count - k));
 						
 						game->track_list.tracks[i].marbles[k] = firstMarble;
 						
@@ -317,29 +310,8 @@ void check_collisions (Game *game, int i)
 						
 					}
 					
-					//game->shot_list.shots[i].x = ix;
-					//game->shot_list.shots[i].y = iy;
-					
-					
-					//game->track_list.tracks[j].marbles[k].color = game->shot_list.shots[i].color;
-					
-					//move_trains_one_step (game);
-					
 					
 				}
-				//printf ("Result at : %lf %lf %lf\n", x, y, z);
-				
-				/*printf ("Kill shot : %d\n", i);
-				if (game->shot_list.shot_count > 0)
-					game->shot_list.shot_count--;
-					
-				//memmove (game->shot_list.shots + i + 1, game->shot_list.shots + i, sizeof (Shot)*(game->shot_list.shot_count - i));
-				for (l = i; l < count; l++)
-				{
-					game->shot_list.shots[l] = game->shot_list.shots[l + 1];
-				}
-				
-				printf ("Now %d shot \n", game->shot_list.shot_count);*/
 			}
 		}
 	}
@@ -362,8 +334,6 @@ void suppress_far_shot (Game *game, int w, int h)
 {
 	int i, j, x, y;
 	int count = game->shot_list.shot_count;
-	//int w = my->win_width;
-	//int h = my->win_height;
 	for (i = 0; i < count; i++)
 	{
 		x = game->shot_list.shots[i].x;
@@ -372,12 +342,10 @@ void suppress_far_shot (Game *game, int w, int h)
 		if ( (x < 0) || (y < 0) || (x > w) || (y > h) )
 		{
 			//printf ("Kill shot : %d\n", i);
+			
+			memmove (game->shot_list.shots + i, game->shot_list.shots + i + 1, 
+				sizeof(Shot)*(game->shot_list.shot_count - i - 1));
 			game->shot_list.shot_count--;
-			/*for (j = i; j < count; j++)
-			{
-				game->shot_list.shots[j] = game->shot_list.shots[j + 1];
-			}*/
-			memmove (game->shot_list.shots + i, game->shot_list.shots + i + 1, sizeof(Shot)*(game->shot_list.shot_count - i));
 			
 			printf ("Now %d shot \n", game->shot_list.shot_count);
 		}
