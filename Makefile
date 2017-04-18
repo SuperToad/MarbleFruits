@@ -1,7 +1,7 @@
 # Makefile de compilation avec GTK3 - 21/02/2016
 
 SHELL   = /bin/bash
-CC      = gcc
+CC      = gcc -g
 MKDEP   = gcc -MM
 RM      = rm -f
 

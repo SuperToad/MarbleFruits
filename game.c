@@ -200,6 +200,8 @@ int check_combo (Game *game, int track_i, int *k, int combo)
 			sizeof(Marble)*(track->marble_count - group_size - cpt_g) );
 		track->marble_count -= group_size;
 	}
+	
+	*k += cpt_g - pos + 1;
 	return group_size;
 }
 
@@ -278,7 +280,7 @@ void check_collisions (Game *game, int i)
 							game->track_list.tracks[j].marbles[k + 1].color = game->shot_list.shots[i].color;
 							
 							memmove (game->shot_list.shots+i, game->shot_list.shots+i+1, 
-								sizeof(Shot)*(game->shot_list.shot_count-1-i));
+								sizeof(Shot)*(game->shot_list.shot_count - i));
 							game->shot_list.shot_count--;
 						}
 						else
@@ -305,7 +307,7 @@ void check_collisions (Game *game, int i)
 							firstMarble.color = game->shot_list.shots[i].color;
 							game->track_list.tracks[j].marbles[k + 1] = firstMarble;
 							memmove (game->shot_list.shots + i, game->shot_list.shots + i + 1, 
-								sizeof(Shot)*(game->shot_list.shot_count - 1 - i));
+								sizeof(Shot)*(game->shot_list.shot_count - i));
 							game->shot_list.shot_count--;
 						}
 						
@@ -335,7 +337,7 @@ void check_collisions (Game *game, int i)
 						game->track_list.tracks[i].marbles[k] = firstMarble;
 						
 						memmove (game->shot_list.shots + i, game->shot_list.shots + i + 1, 
-							sizeof(Shot)*(game->shot_list.shot_count - i - 1));
+							sizeof(Shot)*(game->shot_list.shot_count - i));
 						game->shot_list.shot_count--;
 						
 					}
@@ -343,14 +345,17 @@ void check_collisions (Game *game, int i)
 				//Combo
 				int group;
 				int combo = 1;
-				//do
-				//{
+				do
+				{
+					printf ("k = %d\n", k);
 					group = check_combo (game, j, &k, combo);
 					
 					printf ("Combo = %d Group = %d\n", combo, group);
+					printf ("k = %d\n", k);
+					
 					combo++;
-				//}
-				//while (group > 2);
+				}
+				while (group > 2);
 				}
 				
 			}
