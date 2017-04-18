@@ -68,17 +68,13 @@ void shoot_ammo (Game *game, double sx, double sy)
 		game->shot_list.shots[count].y = game->canon.cy + game->shot_list.shots[count].dy*50;
 		
 		game->shot_list.shots[count].color = game->canon.ammo1;
-		//printf ("Shot vers %f %f \n", my->game->shot_list.shots[count].dx, my->game->shot_list.shots[count].dy);
+		
 		game->shot_list.shot_count++;
 		
 		game->canon.reload = game->canon.reload_time;
 		prepare_ammo (game);
 	}
-	/*dx = cos (angle)
-	 * dy = sin (angle)
-	 * shot->x = cx + dx*50;
-	 * shot->y = cy + dy*50;
-	*/
+	
 }
 
 void prepare_ammo (Game *game)
@@ -209,7 +205,7 @@ void check_collisions (Game *game, int i)
 
 	int count = game->track_list.track_count;
 	int diametre = 30;
-	int speed = 4;
+
 	int marble_count, first_visible;
 	double dist = 1.5;
 	double dist_x, dist_y, p;
@@ -239,8 +235,8 @@ void check_collisions (Game *game, int i)
 			{
 				printf ("Collision at : %lf %lf\n", dist_x, dist_y);
 				
-				nsx = sx + game->shot_list.shots[i].dx*speed;
-				nsy = sy + game->shot_list.shots[i].dy*speed;
+				nsx = sx + game->shot_list.shots[i].dx*SHOT_SPEED;
+				nsy = sy + game->shot_list.shots[i].dy*SHOT_SPEED;
 				
 				compute_distant_point_forward (game->track_list.tracks[j].sample_x, game->track_list.tracks[j].sample_y, 
 					game->track_list.tracks[j].marbles[k].t, game->track_list.tracks[j].sample_count, dist, &nmx, &nmy);
@@ -362,18 +358,17 @@ void move_shot_one_step (Game *game)
 {
 	int i;
 	int count = game->shot_list.shot_count;
-	int speed = 4;
 	for (i = 0; i < count; i++)
 	{
-		game->shot_list.shots[i].x += game->shot_list.shots[i].dx*speed;
-		game->shot_list.shots[i].y += game->shot_list.shots[i].dy*speed;
+		game->shot_list.shots[i].x += game->shot_list.shots[i].dx*SHOT_SPEED;
+		game->shot_list.shots[i].y += game->shot_list.shots[i].dy*SHOT_SPEED;
 		check_collisions (game, i);
 	}
 }
 
 void suppress_far_shot (Game *game, int w, int h)
 {
-	int i, j, x, y;
+	int i, x, y;
 	int count = game->shot_list.shot_count;
 	for (i = 0; i < count; i++)
 	{
