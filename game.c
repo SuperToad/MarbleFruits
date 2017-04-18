@@ -169,6 +169,40 @@ void move_trains_one_step (Game *game)
 	}
 }
 
+int check_combo (Game *game, int track_i, int *k, int combo)
+{
+	int pos = *k;
+	Track * track = &game->track_list.tracks[track_i];
+	Marble * marbles = track->marbles;
+	int color = track->marbles[pos].color;
+	
+	int group_size = 1;
+	
+	int cpt_d = pos + 1;
+	while (marbles[cpt_d].color == color && cpt_d < track->marble_count)
+	{
+		group_size++;
+		cpt_d++;
+	}
+	
+	int cpt_g = pos - 1;
+	while (marbles[cpt_g].color == color && cpt_g >= track->first_visible)
+	{
+		group_size++;
+		cpt_g--;
+	}
+	
+	if (group_size > 2)
+	{
+		printf ("From %d to %d (%d)\n", (cpt_g + 1), (cpt_g + group_size + 1), 
+			(track->marble_count - group_size - cpt_g) );
+		memmove ( marbles + cpt_g + 1, marbles + cpt_g + group_size + 1,
+			sizeof(Marble)*(track->marble_count - group_size - cpt_g) );
+		track->marble_count -= group_size;
+	}
+	return group_size;
+}
+
 void check_collisions (Game *game, int i)
 {
 	int j, k, l;
@@ -306,8 +340,19 @@ void check_collisions (Game *game, int i)
 						
 					}
 					
+				//Combo
+				int group;
+				int combo = 1;
+				//do
+				//{
+					group = check_combo (game, j, &k, combo);
 					
+					printf ("Combo = %d Group = %d\n", combo, group);
+					combo++;
+				//}
+				//while (group > 2);
 				}
+				
 			}
 		}
 	}
