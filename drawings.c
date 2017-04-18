@@ -278,6 +278,18 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 }
 
 
+void draw_score (cairo_t *cr, Mydata *my)
+{
+	
+	PangoLayout *layout = pango_cairo_create_layout (cr);
+	//cairo_identity_matrix (cr);
+	font_set_name (layout, "Sans 12");
+	cairo_set_source_rgb(cr, 0.4, 0.4, 0.4);
+	
+	font_draw_text (cr, layout, FONT_TC, 50, 0, "Score : %d", my->game->score);
+	
+}
+
 gboolean on_timeout1 (gpointer data)
 {
 	Mydata *my = data;
@@ -638,10 +650,12 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
     PangoLayout *layout = pango_cairo_create_layout (cr);
 	if (my->game_mode != EDIT)
 	{
+		draw_score (cr, my);
 		draw_train_tracks (cr, my);
 		draw_canon (cr, my);
 		draw_shots (cr, my);
 		draw_train_marbles (cr, my);
+		
 	}
 	else
 	{
@@ -650,8 +664,6 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
 		draw_bezier_polygon_open (cr, &my->curve_infos);
 		draw_bezier_curves_prolong (cr, &my->curve_infos, 0.1);
 	}
-	
-    //
     
     
 	// Ici on affiche du texte en utilisant layout
@@ -676,7 +688,6 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
 		draw_bezier_curves_clip (cr, &my->curve_infos, 0.1, my);*/
 	
 	//draw_bezier_curves_prolong (cr, &my->curve_infos, 0.1);
-	
 	
 	
 	g_object_unref (layout);

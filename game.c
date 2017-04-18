@@ -349,10 +349,15 @@ void check_collisions (Game *game, int i)
 					printf ("Combo = %d Group = %d\n", combo, group);
 					printf ("k = %d\n", k);
 					
+					// Ajout score
+					if (combo > 1)
+						game->score += group*pow (10, combo);
+					
 					combo++;
 				}
 				while (group > 2);
 				}
+				
 				
 			}
 		}
