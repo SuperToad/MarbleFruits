@@ -84,6 +84,9 @@ void game_init (Mydata *my)
 	my->game->g_rand = g_rand_new_with_seed (10); // change seed
 	
 	my->game->shot_list.shot_count = 0;
+	my->game->score = 0;
+	my->game->current_level = 0;
+	my->game->level_list.level_count = 1;
 	
 	my->orange = cairo_image_surface_create_from_png ("./images/orange.png");
 	my->pomme = cairo_image_surface_create_from_png ("./images/pomme.png");

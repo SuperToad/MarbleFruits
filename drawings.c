@@ -280,7 +280,6 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 
 void draw_score (cairo_t *cr, Mydata *my)
 {
-	
 	PangoLayout *layout = pango_cairo_create_layout (cr);
 	//cairo_identity_matrix (cr);
 	font_set_name (layout, "Sans 12");

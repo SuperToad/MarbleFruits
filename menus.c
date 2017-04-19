@@ -67,8 +67,11 @@ void on_item_save_level_activate (GtkWidget *widget, gpointer data){
     Mydata *my = get_mydata(data);
 
 	FILE * fp;
+	
+	char s[50];
+	sprintf(s, "./levels/%d.txt", my->game->current_level);
 
-	fp = fopen ("./levels/0.txt", "w+");
+	fp = fopen (s, "w+");
 	int count = my->curve_infos.curve_list.curve_count;
 	fprintf(fp, "%d\n", count);
 	int i, j, control_count;
@@ -89,17 +92,25 @@ void on_item_save_level_activate (GtkWidget *widget, gpointer data){
 void on_item_load_level_activate (GtkWidget *widget, gpointer data){
     Mydata *my = get_mydata(data);
     
-    FILE *file = fopen ("./levels/0.txt", "r");
+    char s[50];
+	sprintf(s, "./levels/%d.txt", my->game->current_level);
+    
+    FILE *file = fopen (s, "r");
 	
 	if (file != NULL)
 	{
-		//Curve curve;
+		int i, j;
+		//Supression curves courantes
+		for (i = 0; i < my->game->track_list.track_count; i++)
+			remove_curve (&my->curve_infos);
+		
+		//Ajout curves
 		int curve_count, control_count;
 		double x, y;
 		if (fscanf(file, "%d", &curve_count) != 1)
 			printf ("Error reading file");
 		my->game->track_list.track_count = curve_count;
-		int i, j;
+		
 		for (i = 0; i < curve_count; i++)
 		{
 			add_curve (&my->curve_infos);
@@ -115,6 +126,23 @@ void on_item_load_level_activate (GtkWidget *widget, gpointer data){
 		init_track (my->game, &my->curve_infos);
 		curve_count += x + y + control_count;
 	}
+}
+
+void on_item_new_level_activate (GtkWidget *widget, gpointer data){
+    Mydata *my = get_mydata(data);
+	
+	my->game->current_level = my->game->level_list.level_count;
+	my->game->level_list.level_count++;
+	
+	char str[50];
+	sprintf(str, "New level : %d.", my->game->level_list.level_count);
+	set_status(my->status, str);
+	
+	//Supression curves courantes
+	int i;
+	for (i = 0; i < my->game->track_list.track_count; i++)
+		remove_curve (&my->curve_infos);
+	my->game->track_list.track_count = 0;
 }
 
 void on_item_about_activate (GtkWidget *widget, gpointer data)
@@ -144,7 +172,7 @@ void on_item_color_activate (GtkWidget *widget, gpointer data){
 		gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (color_chooser), &bg_color);
 		gchar *c;
 		c = gdk_rgba_to_string (&bg_color);
-		char s[1000];
+		char s[100];
 		sprintf(s, "Selected bg color : %s", c);
 		set_status (my->status, s);
 		gtk_widget_override_background_color(my->area1, GTK_STATE_FLAG_NORMAL, &bg_color);
@@ -204,13 +232,28 @@ void on_item_edit_activate (GtkCheckMenuItem *widget, gpointer data){
     refresh_area (my->area1);
 }
 
+void on_item_pause_activate (GtkCheckMenuItem *widget, gpointer data){
+    Mydata *my = get_mydata(data);	
+
+    if (my->game_mode == PLAY) {
+        my->game_mode = PAUSE;
+    }
+    else {
+        my->game_mode = PLAY;
+    }
+    
+    
+    refresh_area (my->area1);
+}
+
 void menu_init (gpointer user_data){
 	Mydata *my = get_mydata(user_data);
 	
 	GtkWidget *item_file, *item_tools, 
 			  *item_help, *sub_file, *item_load, *item_quit, *sub_tools,
 			  *item_rotate, *item_color, *item_scale, *sub_help, *item_about,
-			  *item_clip, *item_edit, *item_save_level, *item_load_level;
+			  *item_clip, *item_edit, *item_pause,
+			  *item_save_level, *item_load_level, *item_new_level;
 	
 	my->menu_bar = gtk_menu_bar_new();	
 	
@@ -228,6 +271,7 @@ void menu_init (gpointer user_data){
 	
 	item_load = gtk_menu_item_new_with_label ("Load BG");
 	item_quit = gtk_menu_item_new_with_label ("Quit");
+	item_pause = gtk_check_menu_item_new_with_label ("Pause");
 	
 	item_load_level = gtk_menu_item_new_with_label ("Start");
 	
@@ -235,19 +279,21 @@ void menu_init (gpointer user_data){
 					  G_CALLBACK(on_item_load_activate), my);
 	g_signal_connect (item_quit, "activate",
 					  G_CALLBACK(on_item_quit_activate), my);
-	
 	g_signal_connect (item_load_level, "activate",
 					  G_CALLBACK(on_item_load_level_activate), my);
-					  	
-	gtk_menu_shell_append(GTK_MENU_SHELL(sub_file), item_load);
+	g_signal_connect (item_pause, "activate",
+					  G_CALLBACK(on_item_pause_activate), my);
 	
+	gtk_menu_shell_append(GTK_MENU_SHELL(sub_file), item_load);
 	gtk_menu_shell_append(GTK_MENU_SHELL(sub_file), item_load_level);
+	gtk_menu_shell_append(GTK_MENU_SHELL(sub_file), item_pause);
 	gtk_menu_shell_append(GTK_MENU_SHELL(sub_file), item_quit);
 	
 	//Tools / Level
 	sub_tools = gtk_menu_new ();
 	
 	item_save_level = gtk_menu_item_new_with_label ("Save");
+	item_new_level = gtk_menu_item_new_with_label ("New");
 	item_rotate = gtk_menu_item_new_with_label ("Rotate");
 	item_color = gtk_menu_item_new_with_label ("Bg Color");
 	item_scale = gtk_menu_item_new_with_label ("Scale");
@@ -265,14 +311,17 @@ void menu_init (gpointer user_data){
 	g_signal_connect (item_edit, "activate",
 					  G_CALLBACK(on_item_edit_activate), my);
 	g_signal_connect (item_save_level, "activate",
-					  G_CALLBACK(on_item_save_level_activate), my);				  
+					  G_CALLBACK(on_item_save_level_activate), my);	
+	g_signal_connect (item_new_level, "activate",
+					  G_CALLBACK(on_item_new_level_activate), my);				  
 					  						
 	//gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_rotate);
 	//gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_color);
 	//gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_scale);
 	//gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_clip);
 	gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_edit);
-	gtk_menu_shell_append(GTK_MENU_SHELL(sub_file), item_save_level);
+	gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_new_level);
+	gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_save_level);
 	
 	//Help
 	sub_help = gtk_menu_new ();

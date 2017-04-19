@@ -143,9 +143,14 @@ void move_trains_one_step (Game *game)
 			
 		}
 		
+		int dx, dy, dist2;
+		dx = game->track_list.tracks[i].marbles[first_visible].x - game->track_list.tracks[i].sample_x[0];
+		dy = game->track_list.tracks[i].marbles[first_visible].y - game->track_list.tracks[i].sample_y[0];
+		dx *= dx;
+		dy *= dy;
+		dist2 = dx + dy;
 		// Apparition nouvelles billes
-		if ( (game->track_list.tracks[i].marbles[first_visible].x - game->track_list.tracks[i].sample_x[0] > diametre) 
-			&& (game->track_list.tracks[i].marbles[first_visible].y - game->track_list.tracks[i].sample_y[0] > diametre)  )
+		if (dist2 > (diametre*2)*(diametre*2))
 		{
 			if (game->track_list.tracks[i].first_visible >= 0)
 			{
