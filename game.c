@@ -185,7 +185,6 @@ int check_combo (Game *game, int track_i, int *k, int combo)
 		group_size++;
 		cpt_d++;
 	}
-	
 	int cpt_g = pos - 1;
 	while (marbles[cpt_g].color == color && cpt_g >= track->first_visible)
 	{
@@ -203,6 +202,7 @@ int check_combo (Game *game, int track_i, int *k, int combo)
 	}
 	
 	*k += cpt_g - pos + 1;
+	
 	return group_size;
 }
 
@@ -425,7 +425,7 @@ void init_track (Game *game, Curve_infos *ci)
 	for (i = 0; i < count; i++)
 	{
 		sample_curve_to_track (&ci->curve_list.curves[i], &game->track_list.tracks[i], 0.1);
-		game->track_list.tracks[i].marble_count = 30;
+		game->track_list.tracks[i].marble_count = 3;
 		for (j = 0; j < game->track_list.tracks[i].marble_count; j++)
 		{
 			game->track_list.tracks[i].marbles[j].t = 0.0;
@@ -438,8 +438,11 @@ void init_track (Game *game, Curve_infos *ci)
 		game->track_list.tracks[i].first_visible = game->track_list.tracks[i].marble_count - 1;
 		printf ("First visible %d\n", game->track_list.tracks[i].first_visible);
 	}
+	game->state = GS_PLAYING;
 	
 }
+
+
 
 void progress_game_next_step (Game *game, int w, int h)
 {
@@ -447,7 +450,7 @@ void progress_game_next_step (Game *game, int w, int h)
 	move_shot_one_step (game);
 	//~ process_shots_collisions
 	move_trains_one_step (game);
-	//~ check_end_of_game
+	//check_end_of_game (game);
 }
 
 

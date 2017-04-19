@@ -82,6 +82,7 @@ void game_init (Mydata *my)
 	canon_init (my, filename);
 	
 	my->game->g_rand = g_rand_new_with_seed (10); // change seed
+	my->game->state = GS_HELLO;
 	
 	my->game->shot_list.shot_count = 0;
 	my->game->score = 0;

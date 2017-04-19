@@ -289,6 +289,37 @@ void draw_score (cairo_t *cr, Mydata *my)
 	
 }
 
+void check_end_of_game (Mydata *my)
+{
+	Game * game = my->game;
+	if (game->state == GS_PLAYING)
+	{
+		int i, win_flag = 1, lost_flag = 0;
+		int count = game->track_list.track_count;
+		
+		for (i = 0; i < count; i++)
+		{
+			if (game->track_list.tracks[i].marble_count > 0)
+				win_flag = 0;
+		}
+		
+		if (win_flag == 1)
+		{
+			printf ("VICTORY !!!\n");
+			game->state = GS_WON;
+			if (game->current_level < game->level_list.level_count)
+				game->current_level++;
+			else
+				game->current_level = 0;
+				
+			set_status(my->status, "You won ! Go to the next level (Game -> Start)");
+			//init_track (my->game, &my->curve_infos);
+		}
+	}
+	
+	
+}
+
 gboolean on_timeout1 (gpointer data)
 {
 	Mydata *my = data;
@@ -296,8 +327,9 @@ gboolean on_timeout1 (gpointer data)
 	if (my->game->canon.reload > 0)
 		my->game->canon.reload--;
 	//printf ("Count : %d\n", my->count);
-	if (my->game_mode == PLAY)
+	if (my->game->state == GS_PLAYING)
 		progress_game_next_step (my->game, my->win_width, my->win_height);
+	check_end_of_game (my);
 	refresh_area (my->area1);
 	return TRUE;
 }
@@ -316,8 +348,8 @@ gboolean on_area1_key_press (GtkWidget *area, GdkEvent *event, gpointer data){
 		case GDK_KEY_r : set_edit_mode (my, EDIT_ADD_CONTROL); break;
 		case GDK_KEY_t : set_edit_mode (my, EDIT_MOVE_CONTROL); break;
 		case GDK_KEY_y : set_edit_mode (my, EDIT_REMOVE_CONTROL); break;
-		case GDK_KEY_space : if (my->game_mode == PLAY) swap_ammo (my->game); break;
-		case GDK_KEY_p : my->game_mode =(my->game_mode == PLAY)?  PAUSE : PLAY; break;
+		case GDK_KEY_space : if (my->game->state == GS_PLAYING) swap_ammo (my->game); break;
+		case GDK_KEY_p : my->game->state =(my->game->state == GS_PLAYING)?  GS_PAUSE : GS_PLAYING; break;
 	}
 	return TRUE;  // evenement traite
 }
@@ -397,7 +429,7 @@ gboolean on_area1_button_press (GtkWidget *area, GdkEvent *event, gpointer data)
 		prepare_ammo  // recharge
 		refresh_area
 	*/
-	if ((my->game_mode == PLAY) && (evb->type ==  GDK_BUTTON_PRESS))
+	if ((my->game->state == GS_PLAYING) && (evb->type ==  GDK_BUTTON_PRESS))
 		shoot_ammo (my->game, my->click_x, my->click_y);
 
 	refresh_area(my->area1);
@@ -455,7 +487,7 @@ gboolean on_area1_motion_notify (GtkWidget *area, GdkEvent *event, gpointer data
 	// calcul et stockage
 	// update_canon_angle()
 
-	if (my->game_mode == PLAY)
+	if (my->game->state == GS_PLAYING)
 		update_canon_angle(my->game, my->click_x, my->click_y);
 
 	refresh_area(my->area1);
@@ -647,7 +679,7 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
     }
     
     PangoLayout *layout = pango_cairo_create_layout (cr);
-	if (my->game_mode != EDIT)
+	if (my->game->state != GS_PAUSE)
 	{
 		draw_score (cr, my);
 		draw_train_tracks (cr, my);

@@ -125,6 +125,7 @@ void on_item_load_level_activate (GtkWidget *widget, gpointer data){
 		}
 		init_track (my->game, &my->curve_infos);
 		curve_count += x + y + control_count;
+		set_status(my->status, "New level starting.");
 	}
 }
 
@@ -219,12 +220,12 @@ void on_item_edit_activate (GtkCheckMenuItem *widget, gpointer data){
     my->show_edit = gtk_check_menu_item_get_active (widget);
     if (my->show_edit == TRUE) {
         set_status(my->status, "Editing mode is on");
-        my->game_mode = EDIT;
+        my->game->state = GS_PAUSE;
     	gtk_widget_show (my->frame1);
     }
     else {
         set_status(my->status, "Playing mode is on");
-        my->game_mode = PLAY;
+        my->game->state = GS_PLAYING;
         gtk_widget_hide (my->frame1);
     }
     
