@@ -416,20 +416,30 @@ void init_track (Game *game, Curve_infos *ci)
 	//echantilloner courbe B spline cubique uniforme prolongee
 	int count = ci->curve_list.curve_count;
 	
-	//game->track_list.track_count = 1;
+	game->track_list.track_count = count;
 	//Track track_list[count];
 	printf ("count : %d\n", count);
 	int i, j;
 	for (i = 0; i < count; i++)
 	{
+		Track trackInit;
+		game->track_list.tracks[0] = trackInit;
+		Track * track = &game->track_list.tracks[0];
+		/*Curve_infos ci;
+		init_curve_infos (&ci);*/
+		
+		
 		sample_curve_to_track (&ci->curve_list.curves[i], &game->track_list.tracks[i], 0.1);
 		game->track_list.tracks[i].marble_count = 3;
+		memset(&game->track_list.tracks[i].marbles[0], 0, sizeof(game->track_list.tracks[i].marbles));
 		for (j = 0; j < game->track_list.tracks[i].marble_count; j++)
 		{
-			game->track_list.tracks[i].marbles[j].t = 0.0;
-			game->track_list.tracks[i].marbles[j].x = game->track_list.tracks[i].sample_x[0];
-			game->track_list.tracks[i].marbles[j].y = game->track_list.tracks[i].sample_y[0];
-			game->track_list.tracks[i].marbles[j].color = g_rand_int_range (game->g_rand, 0, 3);
+			Marble m;
+			m.t = 0.0;
+			m.x = game->track_list.tracks[i].sample_x[0];
+			m.y = game->track_list.tracks[i].sample_y[0];
+			m.color = g_rand_int_range (game->g_rand, 0, 3);
+			game->track_list.tracks[i].marbles[j] = m;
 			printf ("New marble %d %lf %lf %d \n", j, game->track_list.tracks[i].marbles[j].x, game->track_list.tracks[i].marbles[j].y,
 				game->track_list.tracks[i].marbles[j].color);
 		}
