@@ -93,6 +93,8 @@ void move_shot_one_step (Game *game);
 void suppress_far_shot (Game *game, int w, int h);
 void swap_ammo (Game *game);
 
+void move_trains_one_step (Game *game);
+
 void init_track (Game *game, Curve_infos *ci);
 
 void progress_game_next_step (Game *game, int w, int h);

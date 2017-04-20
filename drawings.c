@@ -284,7 +284,7 @@ void check_end_of_game (Mydata *my)
 	Game * game = my->game;
 	if (game->state == GS_PLAYING)
 	{
-		int i, win_flag = 1, lost_flag = 0;
+		int i, win_flag = 1;
 		int count = game->track_list.track_count;
 		
 		for (i = 0; i < count; i++)
@@ -308,13 +308,20 @@ void check_end_of_game (Mydata *my)
 		
 		for (i = 0; i < count; i++)
 		{
-		
-			if ( lost_flag == 1)
+			int marble_count = game->track_list.tracks[i].marble_count;
+			
+			int dist_x = game->track_list.tracks[i].marbles[marble_count - 1].x - game->track_list.tracks[i].sample_x[game->track_list.tracks[i].sample_count - 1];
+			int dist_y = game->track_list.tracks[i].marbles[marble_count - 1].y - game->track_list.tracks[i].sample_y[game->track_list.tracks[i].sample_count - 1];
+
+			if ( dist_x*dist_x + dist_y*dist_y <= 15*15)
 			{
-				printf ("DEFEAT !!!/n");
+				//dist *= 10;
+				printf ("t : %lf\n", game->track_list.tracks[i].marbles[marble_count - 1].t);
+				printf ("DEFEAT !!!\n");
 				game->state = GS_LOST;
 				set_status(my->status, "You have lost! Retry your luck ");
 			}
+
 		}
 	}
 	
@@ -356,6 +363,8 @@ gboolean on_timeout1 (gpointer data)
 	//printf ("Count : %d\n", my->count);
 	if (my->game->state == GS_PLAYING)
 		progress_game_next_step (my->game, my->win_width, my->win_height);
+	if (my->game->state == GS_LOST)
+		move_trains_one_step (my->game);
 	check_end_of_game (my);
 	refresh_area (my->area1);
 	return TRUE;

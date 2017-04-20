@@ -94,6 +94,9 @@ void move_trains_one_step (Game *game)
 	double result;
 	double xB, yB;
 	int dist_x, dist_y, dist_tot;
+	if (game->state == GS_LOST)
+		dist *= 10;
+	
 	for (i = 0; i < count; i++)
 	{
 		marble_count = game->track_list.tracks[i].marble_count;
@@ -115,7 +118,10 @@ void move_trains_one_step (Game *game)
 
 		if ( sqrt(dist_x*dist_x + dist_y*dist_y) <= diametre)
 		{
-			dist *= 10;
+			//dist *= 10;
+			printf ("t : %lf\n", game->track_list.tracks[i].marbles[marble_count - 1].t);
+			game->track_list.tracks[i].marble_count--;
+			
 		}
 		
 		// Pousser les billes apres first_visible
