@@ -315,6 +315,13 @@ void check_end_of_game (Mydata *my)
 			set_status(my->status, "You won ! Go to the next level (Game -> Start)");
 			//init_track (my->game, &my->curve_infos);
 		}
+		
+		if ( lost_flag == 1)
+		{
+			printf ("DEFEAT !!!/n");
+			game->state = GS_LOST;
+			set_status(my->status, "You have lost! Retry your luck (Game -> Start");
+		}
 	}
 	
 	
