@@ -116,7 +116,6 @@ void move_trains_one_step (Game *game)
 		if ( sqrt(dist_x*dist_x + dist_y*dist_y) <= diametre)
 		{
 			dist *= 10;
-			//printf ("FINISH\n");
 		}
 		
 		// Pousser les billes apres first_visible
@@ -392,7 +391,6 @@ void suppress_far_shot (Game *game, int w, int h)
 		
 		if ( (x < 0) || (y < 0) || (x > w) || (y > h) )
 		{
-			//printf ("Kill shot : %d\n", i);
 			
 			memmove (game->shot_list.shots + i, game->shot_list.shots + i + 1, 
 				sizeof(Shot)*(game->shot_list.shot_count - i - 1));
