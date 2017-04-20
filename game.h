@@ -79,6 +79,9 @@ typedef struct {
   Track_list track_list;
   Level_list level_list;
   GRand *g_rand;
+  int diameter;
+  double speed;
+  double initial_speed;
 } Game;
 
 void sample_curve_to_track (Curve *curve, Track *track, double theta);

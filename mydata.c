@@ -97,6 +97,9 @@ void game_init (Game * game, int win_width, int win_height)
 	game->score = 0;
 	game->current_level = 0;
 	game->level_list.level_count = 1;
+	game->diameter = 30;
+	game->initial_speed = 10.0;
+	game->speed = game->initial_speed;
 	
 	
 }

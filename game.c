@@ -86,8 +86,8 @@ void prepare_ammo (Game *game)
 void move_trains_one_step (Game *game)
 {
 	int i, j;
-	double dist = 1.5;
-	double diametre = 15;
+	double dist = game->speed;
+	double diametre = game->diameter/2;
 	int count = game->track_list.track_count;
 	
 	int marble_count, first_visible;
@@ -95,7 +95,7 @@ void move_trains_one_step (Game *game)
 	double xB, yB;
 	int dist_x, dist_y, dist_tot;
 	if (game->state == GS_LOST)
-		dist *= 10;
+		game->speed = game->initial_speed;
 	
 	for (i = 0; i < count; i++)
 	{
@@ -170,6 +170,13 @@ void move_trains_one_step (Game *game)
 					game->track_list.tracks[i].marbles[first_visible].y = yB;
 					game->track_list.tracks[i].marbles[first_visible].t = result;
 				}
+				// Reduction vitesse
+				if ((marble_count - game->track_list.tracks[i].first_visible) > marble_count/2 )
+				{
+					game->speed = game->initial_speed/10.0;
+					printf ("SHOOT\n");
+				}
+					
 			}	
 		}
 	}
@@ -191,6 +198,8 @@ int check_combo (Game *game, int track_i, int *k, int combo)
 		cpt_d++;
 	}
 	int cpt_g = pos - 1;
+	if (cpt_g < 0)
+		cpt_g = 0;
 	while (marbles[cpt_g].color == color && cpt_g >= track->first_visible)
 	{
 		group_size++;
@@ -216,7 +225,7 @@ void check_collisions (Game *game, int i)
 	int j, k, l;
 
 	int count = game->track_list.track_count;
-	int diametre = 30;
+	int diametre = game->diameter;
 
 	int marble_count, first_visible;
 	double dist = 1.5;
@@ -423,20 +432,19 @@ void init_track (Game *game, Curve_infos *ci)
 	int count = ci->curve_list.curve_count;
 	
 	game->track_list.track_count = count;
-	//Track track_list[count];
 	printf ("count : %d\n", count);
 	int i, j;
 	for (i = 0; i < count; i++)
 	{
 		Track trackInit;
 		game->track_list.tracks[0] = trackInit;
-		Track * track = &game->track_list.tracks[0];
+		//Track * track = &game->track_list.tracks[0];
 		/*Curve_infos ci;
 		init_curve_infos (&ci);*/
 		
 		
 		sample_curve_to_track (&ci->curve_list.curves[i], &game->track_list.tracks[i], 0.1);
-		game->track_list.tracks[i].marble_count = 3;
+		game->track_list.tracks[i].marble_count = 20;
 		memset(&game->track_list.tracks[i].marbles[0], 0, sizeof(game->track_list.tracks[i].marbles));
 		for (j = 0; j < game->track_list.tracks[i].marble_count; j++)
 		{
@@ -452,6 +460,7 @@ void init_track (Game *game, Curve_infos *ci)
 		game->track_list.tracks[i].first_visible = game->track_list.tracks[i].marble_count - 1;
 		printf ("First visible %d\n", game->track_list.tracks[i].first_visible);
 	}
+	game->speed = game->initial_speed;
 	game->state = GS_PLAYING;
 	
 }

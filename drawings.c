@@ -211,7 +211,7 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 	int i, j = 0;
 
 	int count = my->game->track_list.track_count;
-	int diameter = 30;
+	int diameter = my->game->diameter;
 	PangoLayout *layout = pango_cairo_create_layout (cr);
 	int marble_count, first_visible;
 	for (i = 0; i < count; i++)
@@ -273,15 +273,16 @@ void draw_score (cairo_t *cr, Mydata *my)
 	PangoLayout *layout = pango_cairo_create_layout (cr);
 	//cairo_identity_matrix (cr);
 	font_set_name (layout, "Sans 12");
-	cairo_set_source_rgb(cr, 0.4, 0.4, 0.4);
+	cairo_set_source_rgb(cr, 0.2, 0.2, 0.2);
 	
-	font_draw_text (cr, layout, FONT_TC, 50, 0, "Score : %d", my->game->score);
+	font_draw_text (cr, layout, FONT_TC, 50, 0, "Niveau : %d\nScore : %d", my->game->current_level, my->game->score);
 	
 }
 
 void check_end_of_game (Mydata *my)
 {
 	Game * game = my->game;
+	int rayon = game->diameter/2;
 	if (game->state == GS_PLAYING)
 	{
 		int i, win_flag = 1;
@@ -313,7 +314,7 @@ void check_end_of_game (Mydata *my)
 			int dist_x = game->track_list.tracks[i].marbles[marble_count - 1].x - game->track_list.tracks[i].sample_x[game->track_list.tracks[i].sample_count - 1];
 			int dist_y = game->track_list.tracks[i].marbles[marble_count - 1].y - game->track_list.tracks[i].sample_y[game->track_list.tracks[i].sample_count - 1];
 
-			if ( dist_x*dist_x + dist_y*dist_y <= 15*15)
+			if ( dist_x*dist_x + dist_y*dist_y <= rayon*rayon)
 			{
 				//dist *= 10;
 				printf ("t : %lf\n", game->track_list.tracks[i].marbles[marble_count - 1].t);
