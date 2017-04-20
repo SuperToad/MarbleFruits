@@ -139,17 +139,11 @@ void draw_canon (cairo_t *cr, Mydata *my)
 void draw_shots (cairo_t *cr, Mydata *my)
 {
 	int i;
-	for (i =0; i < my->game->shot_list.shot_count; i++)
+	for (i = 0; i < my->game->shot_list.shot_count; i++)
 	{
 		cairo_save (cr);
 		
-		/*cairo_identity_matrix (cr);
-		cairo_set_line_width (cr, 1.5);
-		cairo_set_source_rgb (cr, 1.0, 0.5, 0);
-		cairo_move_to (cr, my->game->shot_list.shots[i].x, my->game->shot_list.shots[i].y);
-		cairo_line_to (cr, my->game->shot_list.shots[i].x * (my->game->shot_list.shots[i].dx*my->game->canon.angle), my->game->shot_list.shots[i].y * (my->game->shot_list.shots[i].dy*my->game->canon.angle));
-		//printf ("stroke vers : %f %f\n", my->game->shot_list.shots[i].dx, my->game->shot_list.shots[i].dy);
-		cairo_stroke (cr);*/
+		
 		cairo_surface_t *fruit;
 		fruit = my->orange;
 		if (my->game->shot_list.shots[i].color == ORANGE)
@@ -165,16 +159,13 @@ void draw_shots (cairo_t *cr, Mydata *my)
 		int cx = my->game->shot_list.shots[i].x - ima_w/2;
 		int cy = my->game->shot_list.shots[i].y - ima_h/2;
 		
-		//double xA = 50.0, yA = 100.0;
 		cairo_identity_matrix (cr);
 		cairo_translate (cr, cx + ima_w/2, cy + ima_h/2);
-		//cairo_rotate (cr, my->game->canon.angle);
 		cairo_scale (cr, 0.05, 0.05);
 		cairo_translate (cr, -cx - ima_w/2, -cy - ima_h/2);
 		
 		cairo_set_source_surface (cr, fruit, cx, cy);
 		cairo_rectangle (cr, cx, cy, ima_w, ima_h);
-		//printf ("Draw at : %f %f\n", my->game->shot_list.shots[i].x, my->game->shot_list.shots[i].y);
 		cairo_fill (cr);
 		
 		cairo_restore (cr);
@@ -207,7 +198,6 @@ void draw_train_tracks (cairo_t *cr, Mydata *my)
 			cairo_arc (cr, t.sample_x[track_count - 1], t.sample_y[track_count - 1], w*3, .0, 2 * 3.14);
 			cairo_fill (cr);
 			color += 0.2;
-			//printf ("Draw width : %d color : %lf\n", w, color);
 		}
 		color = 0.8;
 		
@@ -312,15 +302,19 @@ void check_end_of_game (Mydata *my)
 			else
 				game->current_level = 0;
 				
-			set_status(my->status, "You won ! Go to the next level (Game -> Start)");
+			set_status(my->status, "You won ! Go to the next level ");
 			//init_track (my->game, &my->curve_infos);
 		}
 		
-		if ( lost_flag == 1)
+		for (i = 0; i < count; i++)
 		{
-			printf ("DEFEAT !!!/n");
-			game->state = GS_LOST;
-			set_status(my->status, "You have lost! Retry your luck (Game -> Start");
+		
+			if ( lost_flag == 1)
+			{
+				printf ("DEFEAT !!!/n");
+				game->state = GS_LOST;
+				set_status(my->status, "You have lost! Retry your luck ");
+			}
 		}
 	}
 	
@@ -418,24 +412,7 @@ gboolean on_area1_button_press (GtkWidget *area, GdkEvent *event, gpointer data)
 				break;
 		}
 	}
-	
-	// Canon
-	// shoot_ammo
-	/*
-	 * Si shot_liste pleine, ignorer
-	 * On rajoute un shot dans shot_list devant le canon
-	 * dx = cos (angle)
-	 * dy = sin (angle)
-	 * shot->x = cx + dx*50;
-	 * shot->y = cy + dy*50;
-	 * shot->color = ammo1
-	 */
-	 
-	/*
-		shoot_ammo    // insère dans shot_list
-		prepare_ammo  // recharge
-		refresh_area
-	*/
+
 	if ((my->game->state == GS_PLAYING) && (evb->type ==  GDK_BUTTON_PRESS))
 		shoot_ammo (my->game, my->click_x, my->click_y);
 
