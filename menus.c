@@ -123,9 +123,9 @@ void on_item_load_level_activate (GtkWidget *widget, gpointer data){
 				add_control (&my->curve_infos, x, y);
 			}
 		}
-		init_track (my->game, &my->curve_infos);
 		curve_count += x + y + control_count;
 		set_status(my->status, "New level starting.");
+		init_track (my->game, &my->curve_infos);
 	}
 }
 

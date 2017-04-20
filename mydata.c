@@ -50,6 +50,15 @@ void init_data(Mydata *data){
 	data->pixbuf_canon2 = NULL;
 	data->edit_mode = EDIT_ADD_CURVE;
 	data->bsp_mode = BSP_OPEN;
+	
+	data->game = malloc (sizeof (Game));
+	
+	data->canon = cairo_image_surface_create_from_png ("./images/dk.png");
+	
+	data->orange = cairo_image_surface_create_from_png ("./images/orange.png");
+	data->pomme = cairo_image_surface_create_from_png ("./images/pomme.png");
+	data->pasteque = cairo_image_surface_create_from_png ("./images/pasteque.png");
+	
 	init_curve_infos(&data->curve_infos);
 }
 
@@ -60,36 +69,34 @@ void set_edit_mode (Mydata *data, int mode) {
 	}
 }
 
-void canon_init (Mydata *my, char* filename)
+void canon_init (Game * game, int win_width, int win_height)
 {
-	my->game->canon.cx = my->win_width/2;
-	my->game->canon.cy = my->win_height/2;
-	my->game->canon.angle = 0.0;
-	my->game->canon.reload = 0.0;
-	my->game->canon.reload_time = 5;
-	my->game->canon.ammo1 = rand()%3;
-	my->game->canon.ammo2 = rand()%3;
+	game->canon.cx = win_width/2;
+	game->canon.cy = win_height/2;
+	game->canon.angle = 0.0;
+	game->canon.reload = 0.0;
+	game->canon.reload_time = 5;
+	game->canon.ammo1 = rand()%3;
+	game->canon.ammo2 = rand()%3;
 	
-	my->canon = cairo_image_surface_create_from_png (filename);
+	
 	
 }
 
-void game_init (Mydata *my)
+void game_init (Game * game, int win_width, int win_height)
 {
-	my->game = malloc (sizeof (Game));
+	static const Game gameInit;
+	*game = gameInit;
+
+	canon_init (game, win_width, win_height);
 	
-	char* filename = "./images/dk.png";
-	canon_init (my, filename);
+	game->g_rand = g_rand_new_with_seed (10); // change seed
+	game->state = GS_HELLO;
 	
-	my->game->g_rand = g_rand_new_with_seed (10); // change seed
-	my->game->state = GS_HELLO;
+	game->shot_list.shot_count = 0;
+	game->score = 0;
+	game->current_level = 0;
+	game->level_list.level_count = 1;
 	
-	my->game->shot_list.shot_count = 0;
-	my->game->score = 0;
-	my->game->current_level = 0;
-	my->game->level_list.level_count = 1;
 	
-	my->orange = cairo_image_surface_create_from_png ("./images/orange.png");
-	my->pomme = cairo_image_surface_create_from_png ("./images/pomme.png");
-	my->pasteque = cairo_image_surface_create_from_png ("./images/pasteque.png");
 }

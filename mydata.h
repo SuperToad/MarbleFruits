@@ -36,8 +36,8 @@ Mydata *get_mydata (gpointer data);
 void init_data(Mydata *data);
 void set_edit_mode (Mydata *data, int mode);
 
-void canon_init (Mydata *my, char* filename);
-void game_init (Mydata *data);
+void canon_init (Game * game, int win_width, int win_height);
+void game_init (Game * game, int win_width, int win_height);
 	 
 	  
 #endif /* MYDATA_H */

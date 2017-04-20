@@ -28,10 +28,10 @@ void on_app_activate (GtkApplication* app, gpointer user_data){
 	editing_init(my);	
 	layout_init(my);		
 	win_scale_init(my);
-	game_init (my);
+	game_init (my->game, my->win_width, my->win_height);
 	g_timeout_add (20, on_timeout1, my);
 	gtk_widget_show_all (my->window);
-	gtk_widget_hide (my->frame1);	
+	gtk_widget_hide (my->frame1);
 }
 
 int main (int argc, char *argv[]){

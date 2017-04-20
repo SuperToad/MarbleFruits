@@ -320,6 +320,32 @@ void check_end_of_game (Mydata *my)
 	
 }
 
+void draw_bg (cairo_t *cr, Mydata *my)
+{
+	//char *filename;
+	//filename = "./images/BG_sunset.png";
+	
+	cairo_save (cr);
+	
+	cairo_surface_t *bg = cairo_image_surface_create_from_png ("./images/BG_sunset.png");
+	
+	int ima_w = cairo_image_surface_get_width (bg),
+		ima_h = cairo_image_surface_get_height (bg);
+		
+	int cx = - ima_w/2;
+	int cy = - ima_h/2;
+	
+	cairo_identity_matrix (cr);
+	//cairo_scale (cr, 0.4, 0.4);
+	cairo_translate (cr, -cx - ima_w/2, -cy - ima_h/2);
+	
+	cairo_set_source_surface (cr, bg, cx, cy);
+	cairo_rectangle (cr, cx, cy, ima_w, ima_h);
+	cairo_fill (cr);
+	
+	//g_free(filename);
+}
+
 gboolean on_timeout1 (gpointer data)
 {
 	Mydata *my = data;
@@ -679,6 +705,8 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
     }
     
     PangoLayout *layout = pango_cairo_create_layout (cr);
+    
+    //draw_bg (cr, my);
 	if (my->game->state != GS_PAUSE)
 	{
 		draw_score (cr, my);
