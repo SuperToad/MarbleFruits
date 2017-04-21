@@ -315,8 +315,10 @@ void check_end_of_game (Mydata *my)
 				printf ("t : %lf\n", game->track_list.tracks[i].marbles[marble_count - 1].t);
 				printf ("DEFEAT !!!\n");
 				game->state = GS_LOST;
-				set_status(my->status, "You have lost! Retry your luck ");
+				game->current_level = 0;
 				my->game->score = 0;
+				set_status(my->status, "You have lost! Retry your luck ");
+				
 				
 			}
 
