@@ -106,7 +106,6 @@ void draw_canon (cairo_t *cr, Mydata *my)
 		int cx = my->game->canon.cx - ima_w/2;
 		int cy = my->game->canon.cy - ima_h/2;
 		
-		//double xA = 50.0, yA = 100.0;
 		cairo_identity_matrix (cr);
 		cairo_translate (cr, cx + ima_w/2, cy + ima_h/2);
 		cairo_rotate (cr, my->game->canon.angle);
@@ -125,13 +124,10 @@ void draw_canon (cairo_t *cr, Mydata *my)
 		cairo_fill (cr);
 		
 		cairo_translate (cr, cx - 1600 + ima_wa2/2, 0);
-		//cairo_translate (cr, -cx - ima_wa2/2, -cy -60);
 		cairo_set_source_surface (cr, ammo2, cx, cy);
 		cairo_rectangle (cr, cx, cy, ima_wa2, ima_ha2);
 		cairo_fill (cr);
-		
 		cairo_restore (cr);
-		//cairo_surface_destroy (my->canon); 
 	}
 
 }
@@ -219,7 +215,6 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 		marble_count = my->game->track_list.tracks[i].marble_count;
 		first_visible = my->game->track_list.tracks[i].first_visible;
 		cairo_surface_t *fruit;
-		//printf ("For %d to %d\n", first_visible, marble_count);
 		for (j = first_visible; j < marble_count; j++)
 		{
 			if (j >= 0)
@@ -344,14 +339,13 @@ void draw_bg (cairo_t *cr, Mydata *my)
 	int cy = - ima_h/2;
 	
 	cairo_identity_matrix (cr);
-	//cairo_scale (cr, 0.4, 0.4);
 	cairo_translate (cr, -cx - ima_w/2, -cy - ima_h/2);
 	
 	cairo_set_source_surface (cr, bg, cx, cy);
 	cairo_rectangle (cr, cx, cy, ima_w, ima_h);
 	cairo_fill (cr);
 	
-	//g_free(filename);
+	
 }
 
 gboolean on_timeout1 (gpointer data)
@@ -442,7 +436,6 @@ gboolean on_area1_button_press (GtkWidget *area, GdkEvent *event, gpointer data)
 			case EDIT_RESET_CLIP : 
 				find_control (&my->curve_infos, my->click_x, my->click_y);
 				reset_shift (&my->curve_infos);
-				//refresh_area(my->area1);
 				break;
 		}
 	}
@@ -491,7 +484,7 @@ gboolean on_area1_motion_notify (GtkWidget *area, GdkEvent *event, gpointer data
 				break;
 			case EDIT_REMOVE_CONTROL : refresh_area (my->area1); break;
 			case EDIT_MOVE_CLIP : 
-				//find_control (&my->curve_infos, my->click_x, my->click_y);
+				
 				move_curve (&my->curve_infos, my->click_x - my->last_x, 
 							  my->click_y - my->last_y);
 				move_shift (&my->curve_infos, my->click_x - my->last_x, 
@@ -503,7 +496,6 @@ gboolean on_area1_motion_notify (GtkWidget *area, GdkEvent *event, gpointer data
 	
 	// CANON
 	// calcul et stockage
-	// update_canon_angle()
 
 	if (my->game->state == GS_PLAYING)
 		update_canon_angle(my->game, my->click_x, my->click_y);
@@ -517,13 +509,13 @@ gboolean on_area1_enter_notify (GtkWidget *area, GdkEvent *event, gpointer data)
 	gtk_widget_grab_focus (my->area1);
 	GdkEventCrossing *evc = &event->crossing;
 	printf ("%s: %.1f %.1f\n", __func__, evc->x, evc->y);
-	return TRUE;  //  ́ev ́enement trait ́e
+	return TRUE;  //  ́evenement trait́e
 }
 
 gboolean on_area1_leave_notify (GtkWidget *area, GdkEvent *event, gpointer data){
 	GdkEventCrossing *evc = &event->crossing;
 	printf ("%s: %.1f %.1f\n", __func__, evc->x, evc->y);
-	return TRUE;  //  ́ev ́enement trait ́e
+	return TRUE;  //  ́evénement trait ́e
 }
 
 void draw_control_labels (cairo_t *cr, PangoLayout *layout, Curve_infos *ci)
@@ -638,7 +630,6 @@ void generate_bezier_path (cairo_t *cr, Control bez_points[4], double theta, int
 	{
 		cairo_line_to (cr, compute_bezier_cubic (bx, t), compute_bezier_cubic (by, t));
 	}
-	//cairo_stroke (cr);
 }
 
 void draw_bezier_curves_fill (cairo_t *cr, Curve_infos *ci, double theta)
@@ -715,10 +706,6 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
 		draw_bezier_polygon_open (cr, &my->curve_infos);
 		draw_bezier_curves_prolong (cr, &my->curve_infos, 0.1);
 	}
-    
-    
-	
-	
 	
 	g_object_unref (layout);
     

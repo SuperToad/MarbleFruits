@@ -118,7 +118,6 @@ void move_trains_one_step (Game *game)
 
 		if ( sqrt(dist_x*dist_x + dist_y*dist_y) <= diametre)
 		{
-			//dist *= 10;
 			printf ("t : %lf\n", game->track_list.tracks[i].marbles[marble_count - 1].t);
 			game->track_list.tracks[i].marble_count--;
 			
@@ -144,7 +143,6 @@ void move_trains_one_step (Game *game)
 				}
 				
 			}
-			//else break;
 			
 		}
 		

@@ -42,7 +42,6 @@ void on_item_load_activate (GtkWidget *widget, gpointer data){
 														 gdk_pixbuf_get_height(my->pixbuf1));
 			
 			set_status(my->status, str);
-			//gtk_widget_set_size_request (my->area1,status gdk_pixbuf_get_width (my->pixbuf1), gdk_pixbuf_get_height (my->pixbuf1));
 			my->scale_value = 1.0;
 			my->rotate_angle = 0.0;
 			apply_image_transforms (my);
