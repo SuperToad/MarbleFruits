@@ -236,12 +236,15 @@ void on_item_edit_activate (GtkCheckMenuItem *widget, gpointer data){
 void on_item_pause_activate (GtkCheckMenuItem *widget, gpointer data){
     Mydata *my = get_mydata(data);	
 
-    if (my->game_mode == PLAY) {
-        my->game_mode = PAUSE;
-    }
-    else {
-        my->game_mode = PLAY;
-    }
+    if (my->game->state == GS_PLAYING)
+	
+         my->game->state = GS_PAUSE;
+    
+     
+    else 
+        my->game->state = GS_PLAYING;
+	
+    
     
     
     refresh_area (my->area1);
@@ -316,10 +319,7 @@ void menu_init (gpointer user_data){
 	g_signal_connect (item_new_level, "activate",
 					  G_CALLBACK(on_item_new_level_activate), my);				  
 					  						
-	//gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_rotate);
-	//gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_color);
-	//gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_scale);
-	//gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_clip);
+					  						
 	gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_edit);
 	gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_new_level);
 	gtk_menu_shell_append(GTK_MENU_SHELL(sub_tools), item_save_level);

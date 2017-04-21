@@ -376,7 +376,7 @@ gboolean on_area1_key_press (GtkWidget *area, GdkEvent *event, gpointer data){
 	GdkEventKey *evk = &event->key;
 	printf ("%s: GDK_KEY_%s\n",	__func__, gdk_keyval_name(evk->keyval));
 	switch (evk->keyval) {
-		case GDK_KEY_q : gtk_widget_destroy(my->window);; break;
+		case GDK_KEY_q : gtk_widget_destroy(my->window); break;
 		case GDK_KEY_a : set_edit_mode (my, EDIT_ADD_CURVE); break;
 		case GDK_KEY_z : set_edit_mode (my, EDIT_MOVE_CURVE); break;
 		case GDK_KEY_e : set_edit_mode (my, EDIT_REMOVE_CURVE); break;
