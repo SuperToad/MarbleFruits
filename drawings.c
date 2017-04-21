@@ -254,7 +254,6 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 				//afficher marble en x y
 				cairo_set_source_surface (cr, fruit, x, y);
 				cairo_rectangle (cr, x, y, ima_w, ima_h);
-				//printf ("Draw at : %f %f\n", my->game->shot_list.shots[i].x, my->game->shot_list.shots[i].y);
 				cairo_fill (cr);
 				
 				cairo_identity_matrix (cr);
@@ -271,10 +270,8 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 void draw_score (cairo_t *cr, Mydata *my)
 {
 	PangoLayout *layout = pango_cairo_create_layout (cr);
-	//cairo_identity_matrix (cr);
 	font_set_name (layout, "Sans 12");
 	cairo_set_source_rgb(cr, 0.2, 0.2, 0.2);
-	
 	font_draw_text (cr, layout, FONT_TC, 50, 0, "Niveau : %d\nScore : %d", my->game->current_level, my->game->score);
 	
 }
@@ -304,7 +301,6 @@ void check_end_of_game (Mydata *my)
 				game->current_level = 0;
 				
 			set_status(my->status, "You won ! Go to the next level ");
-			//init_track (my->game, &my->curve_infos);
 		}
 		
 		for (i = 0; i < count; i++)
@@ -316,11 +312,12 @@ void check_end_of_game (Mydata *my)
 
 			if ( dist_x*dist_x + dist_y*dist_y <= rayon*rayon)
 			{
-				//dist *= 10;
 				printf ("t : %lf\n", game->track_list.tracks[i].marbles[marble_count - 1].t);
 				printf ("DEFEAT !!!\n");
 				game->state = GS_LOST;
 				set_status(my->status, "You have lost! Retry your luck ");
+				my->game->score = 0;
+				
 			}
 
 		}
@@ -361,7 +358,6 @@ gboolean on_timeout1 (gpointer data)
 	my->count++;
 	if (my->game->canon.reload > 0)
 		my->game->canon.reload--;
-	//printf ("Count : %d\n", my->count);
 	if (my->game->state == GS_PLAYING)
 		progress_game_next_step (my->game, my->win_width, my->win_height);
 	if (my->game->state == GS_LOST)
@@ -719,28 +715,7 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
 	}
     
     
-	// Ici on affiche du texte en utilisant layout
-	//draw_control_labels (cr, layout, &my->curve_infos);
 	
-	//draw_bezier_polygon_open (cr, &my->curve_infos);
-	
-	// Curves
-	/*if ( my->bsp_mode == BSP_OPEN )
-		draw_bezier_curves_open (cr, &my->curve_infos, 0.1);
-	
-	if ( my->bsp_mode == BSP_CLOSE )
-		draw_bezier_curves_close (cr, &my->curve_infos, 0.1);
-	
-	if ( my->bsp_mode == BSP_PROLONG )
-		draw_bezier_curves_prolong (cr, &my->curve_infos, 0.1);
-	
-	if ( my->bsp_mode == BSP_FILL )
-		draw_bezier_curves_fill (cr, &my->curve_infos, 0.1);
-		
-	if ( my->bsp_mode == BSP_CLIP )
-		draw_bezier_curves_clip (cr, &my->curve_infos, 0.1, my);*/
-	
-	//draw_bezier_curves_prolong (cr, &my->curve_infos, 0.1);
 	
 	
 	g_object_unref (layout);
