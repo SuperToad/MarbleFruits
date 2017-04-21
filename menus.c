@@ -161,40 +161,6 @@ void on_item_about_activate (GtkWidget *widget, gpointer data)
 			NULL);
 }
 
-void on_item_color_activate (GtkWidget *widget, gpointer data){
-	Mydata *my = get_mydata(data);
-	gint res = 0;
-    printf ("Color\n");
-    GtkWidget *color_chooser;
-    color_chooser = gtk_color_chooser_dialog_new ("Background color", NULL);
-    res = gtk_dialog_run(GTK_DIALOG (color_chooser));
-	if (res == GTK_RESPONSE_OK) { 
-		GdkRGBA bg_color;
-		gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (color_chooser), &bg_color);
-		gchar *c;
-		c = gdk_rgba_to_string (&bg_color);
-		char s[100];
-		sprintf(s, "Selected bg color : %s", c);
-		set_status (my->status, s);
-		gtk_widget_override_background_color(my->area1, GTK_STATE_FLAG_NORMAL, &bg_color);
-		g_free(c);
-	}
-    gtk_widget_destroy(color_chooser);
-}
-
-void on_item_rotate_activate (GtkWidget *widget, gpointer data){
-    Mydata *my = get_mydata(data);
-    if (my->pixbuf1 != NULL){
-		my->rotate_angle = my->rotate_angle + 90;
-		if (my->rotate_angle >= 360) 
-			my->rotate_angle = my->rotate_angle - 360;
-		update_area1_with_transforms (my);
-		
-		set_status(my->status, "Image rotated.");
-	}
-	else 
-		set_status(my->status, "No image to rotate.");
-}
 
 void on_item_scale_activate (GtkWidget *widget, gpointer data){
     Mydata *my = get_mydata(data);	 
@@ -255,8 +221,8 @@ void menu_init (gpointer user_data){
 	
 	GtkWidget *item_file, *item_tools, 
 			  *item_help, *sub_file, *item_load, *item_quit, *sub_tools,
-			  *item_rotate, *item_color, *item_scale, *sub_help, *item_about,
-			  *item_clip, *item_edit, *item_pause,
+			  *sub_help, *item_about,
+			  *item_edit, *item_pause,
 			  *item_save_level, *item_load_level, *item_new_level;
 	
 	my->menu_bar = gtk_menu_bar_new();	
@@ -298,22 +264,8 @@ void menu_init (gpointer user_data){
 	
 	item_save_level = gtk_menu_item_new_with_label ("Save");
 	item_new_level = gtk_menu_item_new_with_label ("New");
-	item_rotate = gtk_menu_item_new_with_label ("Rotate");
-	item_color = gtk_menu_item_new_with_label ("Bg Color");
-	item_scale = gtk_menu_item_new_with_label ("Scale");
-	item_clip = gtk_check_menu_item_new_with_label ("Clip");
 	item_edit = gtk_check_menu_item_new_with_label ("Edit");
 
-	g_signal_connect (item_rotate, "activate",
-					  G_CALLBACK(on_item_rotate_activate), my);
-	g_signal_connect (item_color, "activate",
-					  G_CALLBACK(on_item_color_activate), my);
-	g_signal_connect (item_scale, "activate",
-					  G_CALLBACK(on_item_scale_activate), my);				  
-	g_signal_connect (item_clip, "activate",
-					  G_CALLBACK(on_item_clip_activate), my);			  
-	g_signal_connect (item_edit, "activate",
-					  G_CALLBACK(on_item_edit_activate), my);
 	g_signal_connect (item_save_level, "activate",
 					  G_CALLBACK(on_item_save_level_activate), my);	
 	g_signal_connect (item_new_level, "activate",
