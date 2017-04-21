@@ -182,24 +182,24 @@ void draw_train_tracks (cairo_t *cr, Mydata *my)
 	int count = my->game->track_list.track_count;
 	for (i = 0; i < count; i++)
 	{
-		Track t = my->game->track_list.tracks[i];
+		//Track t = my->game->track_list.tracks[i];
 		for (w = width; w >= 0; w -= 4)
 		{
 			cairo_set_source_rgb (cr, color, color, color);
 			cairo_set_line_width (cr, w);
 			
-			cairo_move_to (cr, t.sample_x[0], t.sample_y[0]);
-			int track_count = t.sample_count;
+			cairo_move_to (cr, my->game->track_list.tracks[i].sample_x[0], my->game->track_list.tracks[i].sample_y[0]);
+			int track_count = my->game->track_list.tracks[i].sample_count;
 			for (j = 0; j < track_count; j++)
-				cairo_line_to (cr, t.sample_x[j], t.sample_y[j]);
+				cairo_line_to (cr, my->game->track_list.tracks[i].sample_x[j], my->game->track_list.tracks[i].sample_y[j]);
 			
 			
 			cairo_stroke (cr);
-			cairo_arc (cr, t.sample_x[track_count - 1], t.sample_y[track_count - 1], w*3, .0, 2 * 3.14);
+			cairo_arc (cr, my->game->track_list.tracks[i].sample_x[track_count - 1], my->game->track_list.tracks[i].sample_y[track_count - 1], w*3, .0, 2 * 3.14);
 			cairo_fill (cr);
 			color += 0.2;
 		}
-		color = 0.8;
+		color = 0.2;
 		
 	}
 	

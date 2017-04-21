@@ -109,8 +109,6 @@ void move_trains_one_step (Game *game)
 			game->track_list.tracks[i].marbles[first_visible].x = xB;
 			game->track_list.tracks[i].marbles[first_visible].y = yB;
 			game->track_list.tracks[i].marbles[first_visible].t = result;
-			if (i > 0)
-				printf ("x : %lf y : %lf\n", xB, yB);
 		}	
 		
 		dist_x = game->track_list.tracks[i].marbles[marble_count - 1].x - game->track_list.tracks[i].sample_x[game->track_list.tracks[i].sample_count - 1];
@@ -241,8 +239,8 @@ void check_collisions (Game *game, int i)
 	
 	for (j = 0; j < count; j++)
 	{
-		marble_count = game->track_list.tracks[i].marble_count;
-		first_visible = game->track_list.tracks[i].first_visible;
+		marble_count = game->track_list.tracks[j].marble_count;
+		first_visible = game->track_list.tracks[j].first_visible;
 		for (k = first_visible; k < marble_count; k++)
 		{
 			sx = game->shot_list.shots[i].x;
@@ -286,10 +284,10 @@ void check_collisions (Game *game, int i)
 					
 							if (result >= 0.0)
 							{
-								game->track_list.tracks[i].marble_count++;
-								game->track_list.tracks[i].marbles[k + 1].x = xB;
-								game->track_list.tracks[i].marbles[k + 1].y = yB;
-								game->track_list.tracks[i].marbles[k + 1].t = result;
+								game->track_list.tracks[j].marble_count++;
+								game->track_list.tracks[j].marbles[k + 1].x = xB;
+								game->track_list.tracks[j].marbles[k + 1].y = yB;
+								game->track_list.tracks[j].marbles[k + 1].t = result;
 
 							}
 							game->track_list.tracks[j].marbles[k + 1].color = game->shot_list.shots[i].color;
@@ -308,9 +306,9 @@ void check_collisions (Game *game, int i)
 						
 								if (result >= 0.0)
 								{
-									game->track_list.tracks[i].marbles[l].x = xB;
-									game->track_list.tracks[i].marbles[l].y = yB;
-									game->track_list.tracks[i].marbles[l].t = result;
+									game->track_list.tracks[j].marbles[l].x = xB;
+									game->track_list.tracks[j].marbles[l].y = yB;
+									game->track_list.tracks[j].marbles[l].t = result;
 
 								}
 							}
@@ -339,17 +337,17 @@ void check_collisions (Game *game, int i)
 					
 							if (result >= 0.0)
 							{
-								game->track_list.tracks[i].marbles[l].x = xB;
-								game->track_list.tracks[i].marbles[l].y = yB;
-								game->track_list.tracks[i].marbles[l].t = result;
+								game->track_list.tracks[j].marbles[l].x = xB;
+								game->track_list.tracks[j].marbles[l].y = yB;
+								game->track_list.tracks[j].marbles[l].t = result;
 
 							}
 						}
-						game->track_list.tracks[i].marble_count++;
+						game->track_list.tracks[j].marble_count++;
 						memmove (game->track_list.tracks[j].marbles + k + 1,game->track_list.tracks[j].marbles + k, 
 							sizeof (Marble)*(marble_count - k));
 						
-						game->track_list.tracks[i].marbles[k] = firstMarble;
+						game->track_list.tracks[j].marbles[k] = firstMarble;
 						
 						memmove (game->shot_list.shots + i, game->shot_list.shots + i + 1, 
 							sizeof(Shot)*(game->shot_list.shot_count - i));
@@ -357,24 +355,24 @@ void check_collisions (Game *game, int i)
 						
 					}
 					
-				//Combo
-				int group;
-				int combo = 1;
-				do
-				{
-					printf ("k = %d\n", k);
-					group = check_combo (game, j, &k, combo);
-					
-					printf ("Combo = %d Group = %d\n", combo, group);
-					printf ("k = %d\n", k);
-					
-					// Ajout score
-					if (combo > 1)
-						game->score += group*pow (10, combo);
-					
-					combo++;
-				}
-				while (group > 2);
+					//Combo
+					int group;
+					int combo = 1;
+					do
+					{
+						printf ("k = %d\n", k);
+						group = check_combo (game, j, &k, combo);
+						
+						printf ("Combo = %d Group = %d\n", combo, group);
+						printf ("k = %d\n", k);
+						
+						// Ajout score
+						if (combo > 1)
+							game->score += group*pow (10, combo);
+						
+						combo++;
+					}
+					while (group > 2);
 				}
 				
 				
@@ -437,14 +435,14 @@ void init_track (Game *game, Curve_infos *ci)
 	for (i = 0; i < count; i++)
 	{
 		Track trackInit;
-		game->track_list.tracks[0] = trackInit;
+		game->track_list.tracks[i] = trackInit;
 		//Track * track = &game->track_list.tracks[0];
 		/*Curve_infos ci;
 		init_curve_infos (&ci);*/
 		
 		
 		sample_curve_to_track (&ci->curve_list.curves[i], &game->track_list.tracks[i], 0.1);
-		game->track_list.tracks[i].marble_count = 20;
+		game->track_list.tracks[i].marble_count = 10;
 		memset(&game->track_list.tracks[i].marbles[0], 0, sizeof(game->track_list.tracks[i].marbles));
 		for (j = 0; j < game->track_list.tracks[i].marble_count; j++)
 		{
