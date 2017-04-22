@@ -319,7 +319,7 @@ void check_end_of_game (Mydata *my)
 				game->state = GS_LOST;
 				//game->current_level = 0;
 				my->game->score = 0;
-				set_status(my->status, "You lost! Retry your luck ");
+				set_status(my->status, "You lost ! Retry your luck ");
 				
 				
 			}

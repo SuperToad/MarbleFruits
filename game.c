@@ -194,13 +194,13 @@ int check_combo (Game *game, int track_i, int *k, int combo)
 		cpt_d++;
 	}
 	int cpt_g = pos - 1;
-	if (cpt_g < 0)
-		cpt_g = 0;
 	while (marbles[cpt_g].color == color && cpt_g >= track->first_visible)
 	{
 		group_size++;
 		cpt_g--;
 	}
+	if (cpt_g < 0)
+		cpt_g = -1;
 	
 	if (group_size > 2)
 	{
