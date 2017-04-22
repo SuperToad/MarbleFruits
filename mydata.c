@@ -83,6 +83,23 @@ void canon_init (Game * game, int win_width, int win_height)
 	
 }
 
+void scan_levels (Game * game)
+{
+	FILE *file;
+	do
+	{
+		char s[50];
+		sprintf(s, "./levels/%d.txt", game->level_list.level_count);
+		
+		file = fopen (s, "r");
+		
+		game->level_list.level_count++;
+	}
+	while (file != NULL);
+	
+	game->level_list.level_count--;
+}
+
 void game_init (Game * game, int win_width, int win_height)
 {
 	static const Game gameInit;
@@ -96,10 +113,13 @@ void game_init (Game * game, int win_width, int win_height)
 	game->shot_list.shot_count = 0;
 	game->score = 0;
 	game->current_level = 0;
-	game->level_list.level_count = 1;
+	game->level_list.level_count = 0;
 	game->diameter = 30;
+	game->total_marbles = 10;
 	game->initial_speed = 10.0;
 	game->speed = game->initial_speed;
 	
+	scan_levels (game);
+	printf ("Found %d levels\n", game->level_list.level_count);
 	
 }

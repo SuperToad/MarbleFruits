@@ -82,6 +82,7 @@ typedef struct {
   int diameter;
   double speed;
   double initial_speed;
+  int total_marbles;
 } Game;
 
 void sample_curve_to_track (Curve *curve, Track *track, double theta);

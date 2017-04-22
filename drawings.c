@@ -290,12 +290,19 @@ void check_end_of_game (Mydata *my)
 		{
 			printf ("VICTORY !!!\n");
 			game->state = GS_WON;
-			if (game->current_level < game->level_list.level_count)
-				game->current_level++;
-			else
+			
+			game->current_level++;
+			if (game->current_level > game->level_list.level_count - 1)
+			{
 				game->current_level = 0;
+				game->total_marbles *= 2;
+				game->initial_speed *= 2;
+			}
 				
-			set_status(my->status, "You won ! Go to the next level ");
+				
+			char s[50];
+			sprintf(s, "You won ! Go to the next level : %d/%d", game->current_level, game->level_list.level_count);
+			set_status(my->status, s);
 		}
 		
 		for (i = 0; i < count; i++)
@@ -310,9 +317,9 @@ void check_end_of_game (Mydata *my)
 				printf ("t : %lf\n", game->track_list.tracks[i].marbles[marble_count - 1].t);
 				printf ("DEFEAT !!!\n");
 				game->state = GS_LOST;
-				game->current_level = 0;
+				//game->current_level = 0;
 				my->game->score = 0;
-				set_status(my->status, "You have lost! Retry your luck ");
+				set_status(my->status, "You lost! Retry your luck ");
 				
 				
 			}
