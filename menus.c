@@ -185,7 +185,7 @@ void on_item_edit_activate (GtkCheckMenuItem *widget, gpointer data){
     my->show_edit = gtk_check_menu_item_get_active (widget);
     if (my->show_edit == TRUE) {
         set_status(my->status, "Editing mode is on");
-        my->game->state = GS_PAUSE;
+        my->game->state = GS_EDIT;
     	gtk_widget_show (my->frame1);
     }
     else {
@@ -201,17 +201,11 @@ void on_item_edit_activate (GtkCheckMenuItem *widget, gpointer data){
 void on_item_pause_activate (GtkCheckMenuItem *widget, gpointer data){
     Mydata *my = get_mydata(data);	
 
-    if (my->game->state == GS_PLAYING)
-	
-         my->game->state = GS_PAUSE;
-    
-     
+    if (my->game->state == GS_PAUSE)
+         my->game->state = GS_PLAYING;
     else 
-        my->game->state = GS_PLAYING;
+        my->game->state = GS_PAUSE;
 	
-    
-    
-    
     refresh_area (my->area1);
 }
 
@@ -266,7 +260,9 @@ void menu_init (gpointer user_data){
 	item_edit = gtk_check_menu_item_new_with_label ("Edit");
 
 	g_signal_connect (item_save_level, "activate",
-					  G_CALLBACK(on_item_save_level_activate), my);	
+					  G_CALLBACK(on_item_save_level_activate), my);
+	g_signal_connect (item_edit, "activate",
+					  G_CALLBACK(on_item_edit_activate), my);	
 	g_signal_connect (item_new_level, "activate",
 					  G_CALLBACK(on_item_new_level_activate), my);				  
 					  						

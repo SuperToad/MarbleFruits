@@ -22,8 +22,8 @@ void on_app_activate (GtkApplication* app, gpointer user_data){
 	Mydata *my = get_mydata(user_data);
 	
 	window_init(app, my);	
-	menu_init(my);	
-	area1_init(my);	
+	menu_init(my);
+	area1_init(my);
 	status_init(my);
 	editing_init(my);	
 	layout_init(my);		

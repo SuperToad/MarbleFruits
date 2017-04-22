@@ -440,7 +440,7 @@ void init_track (Game *game, Curve_infos *ci)
 		
 		
 		sample_curve_to_track (&ci->curve_list.curves[i], &game->track_list.tracks[i], 0.1);
-		game->track_list.tracks[i].marble_count = 10;
+		game->track_list.tracks[i].marble_count = 10/count;
 		memset(&game->track_list.tracks[i].marbles[0], 0, sizeof(game->track_list.tracks[i].marbles));
 		for (j = 0; j < game->track_list.tracks[i].marble_count; j++)
 		{

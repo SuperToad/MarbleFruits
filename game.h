@@ -6,7 +6,7 @@
 
 #include "curve.h"
 
-typedef enum { GS_HELLO, GS_PLAYING, GS_PAUSE, GS_WON, GS_LOST } Game_state;
+typedef enum { GS_HELLO, GS_PLAYING, GS_PAUSE, GS_WON, GS_LOST, GS_EDIT} Game_state;
 typedef enum { TS_INTRO, TS_NORMAL, TS_COMBO2, TS_COMBO3} Track_state;
 
 #define SHOT_MAX       10

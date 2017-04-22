@@ -690,7 +690,7 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
     PangoLayout *layout = pango_cairo_create_layout (cr);
     
     //draw_bg (cr, my);
-	if (my->game->state != GS_PAUSE)
+	if (my->game->state != GS_EDIT)
 	{
 		draw_score (cr, my);
 		draw_train_tracks (cr, my);
