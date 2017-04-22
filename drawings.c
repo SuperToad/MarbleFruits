@@ -252,9 +252,9 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 				cairo_fill (cr);
 				
 				cairo_identity_matrix (cr);
-				font_set_name (layout, "Sans 8");
+				/*font_set_name (layout, "Sans 8");
 				cairo_set_source_rgb(cr, 0.4, 0.4, 0.4);
-				font_draw_text (cr, layout, FONT_TC, x + diameter/2, y - 10, "%d", j);
+				font_draw_text (cr, layout, FONT_TC, x + diameter/2, y - 10, "%d", j);*/
 			}	
 		}
 	}
