@@ -208,7 +208,7 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 
 	int count = my->game->track_list.track_count;
 	int diameter = my->game->diameter;
-	PangoLayout *layout = pango_cairo_create_layout (cr);
+	//PangoLayout *layout = pango_cairo_create_layout (cr);
 	int marble_count, first_visible;
 	for (i = 0; i < count; i++)
 	{
@@ -264,7 +264,10 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 
 void draw_score (cairo_t *cr, Mydata *my)
 {
+	
 	PangoLayout *layout = pango_cairo_create_layout (cr);
+	
+	//cairo_identity_matrix (cr);
 	font_set_name (layout, "Sans 12");
 	cairo_set_source_rgb(cr, 0.2, 0.2, 0.2);
 	font_draw_text (cr, layout, FONT_TC, 50, 0, "Niveau : %d\nScore : %d", my->game->current_level, my->game->score);
@@ -321,39 +324,13 @@ void check_end_of_game (Mydata *my)
 				my->game->score = 0;
 				set_status(my->status, "You lost ! Retry your luck ");
 				
-				
 			}
 
 		}
 	}
 	
-	
 }
 
-void draw_bg (cairo_t *cr, Mydata *my)
-{
-	//char *filename;
-	//filename = "./images/BG_sunset.png";
-	
-	cairo_save (cr);
-	
-	cairo_surface_t *bg = cairo_image_surface_create_from_png ("./images/BG_sunset.png");
-	
-	int ima_w = cairo_image_surface_get_width (bg),
-		ima_h = cairo_image_surface_get_height (bg);
-		
-	int cx = - ima_w/2;
-	int cy = - ima_h/2;
-	
-	cairo_identity_matrix (cr);
-	cairo_translate (cr, -cx - ima_w/2, -cy - ima_h/2);
-	
-	cairo_set_source_surface (cr, bg, cx, cy);
-	cairo_rectangle (cr, cx, cy, ima_w, ima_h);
-	cairo_fill (cr);
-	
-	
-}
 
 gboolean on_timeout1 (gpointer data)
 {
@@ -696,6 +673,7 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
     
     PangoLayout *layout = pango_cairo_create_layout (cr);
     
+    draw_canon (cr, my);
     //draw_bg (cr, my);
 	if (my->game->state != GS_EDIT)
 	{

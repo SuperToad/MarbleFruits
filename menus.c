@@ -88,6 +88,48 @@ void on_item_save_level_activate (GtkWidget *widget, gpointer data){
 	fclose(fp);
 }
 
+void load_bg (Mydata *my)
+{
+	char *filename;
+	int bg = my->game->current_level%3;
+	switch (bg)
+	{
+		case 0 :
+			filename = "./images/BG_sky.png";
+			break;
+		case 1 :
+			filename = "./images/BG_sunset.png";
+			break;
+		case 2 :
+			filename = "./images/BG_night.png";
+			break;
+		default :
+			filename = "./images/BG_sky.png";
+			break;
+	}
+	
+	set_status(my->status, "Loading image ...");
+	g_clear_object(&my->pixbuf1);
+	my->pixbuf1 = gdk_pixbuf_new_from_file(filename, NULL);
+	if (my->pixbuf1 == NULL) { 
+		set_status(my->status, "Loading failed : not an image.");
+		//gtk_image_set_from_icon_name (GTK_IMAGE (my->image1), "image-missing",
+		//							  GTK_ICON_SIZE_DIALOG);
+	}
+	else {
+		char str[80];
+		sprintf(str, "Loading success : image %dx%d.", gdk_pixbuf_get_width(my->pixbuf1),
+													 gdk_pixbuf_get_height(my->pixbuf1));
+		
+		set_status(my->status, str);
+		my->scale_value = 3.5;
+		my->rotate_angle = 0.0;
+		apply_image_transforms (my);
+	}
+	
+	
+}
+
 void on_item_load_level_activate (GtkWidget *widget, gpointer data){
     Mydata *my = get_mydata(data);
     
@@ -127,6 +169,7 @@ void on_item_load_level_activate (GtkWidget *widget, gpointer data){
 			}
 		}
 		curve_count += x + y + control_count;
+		load_bg (my);
 		set_status(my->status, "New level starting.");
 		init_track (my->game, &my->curve_infos);
 	}
