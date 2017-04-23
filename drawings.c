@@ -660,10 +660,9 @@ void draw_bezier_curves_clip(cairo_t *cr, Curve_infos *ci, double theta, Mydata 
 void draw_title (Mydata * my, cairo_t *cr)
 {
 	// Background
-	/*if (my->pixbuf1 == NULL)
-	{*/
+	if (my->pixbuf1 == NULL)
+	{
 		char *filename = "./images/BG_night.png";
-		set_status(my->status, "Loading image ...");
 		g_clear_object(&my->pixbuf1);
 		my->pixbuf1 = gdk_pixbuf_new_from_file(filename, NULL);
 		if (my->pixbuf1 == NULL) { 
@@ -672,45 +671,41 @@ void draw_title (Mydata * my, cairo_t *cr)
 			//							  GTK_ICON_SIZE_DIALOG);
 		}
 		else {
-			char str[80];
-			sprintf(str, "Loading success : image %dx%d.", gdk_pixbuf_get_width(my->pixbuf1),
-														 gdk_pixbuf_get_height(my->pixbuf1));
-			
-			set_status(my->status, str);
 			my->scale_value = 3.5;
 			my->rotate_angle = 0.0;
 			apply_image_transforms (my);
 			
 			refresh_area (my->area1);
 		}
-	//}
+	}
 	
 	// Noms
 	PangoLayout *layout = pango_cairo_create_layout (cr);
 	font_set_name (layout, "Sans 24");
-	cairo_set_source_rgb(cr, 0.3, 0.6, 0.4);
-	font_draw_text (cr, layout, FONT_TC,400,250, "Marble Fruits 2 : Fruits' Revenge\n DUFFAUT Julien \n PASTOR Jean-Baptiste");	
+	cairo_set_source_rgb(cr, 0.1, 0.3, 0.2);
+	font_draw_text (cr, layout, FONT_TC, my->win_width/2,my->win_height/2 - 50, 
+		"Marble Fruits 2 : Fruits' Revenge\n DUFFAUT Julien \n PASTOR Jean-Baptiste");	
 }
 
 gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){   
 	
 	Mydata *my = get_mydata(data);
 	
+	if((my->pixbuf2 != NULL) && ( my->bsp_mode != BSP_CLIP ) ){
+		int pix_width = gdk_pixbuf_get_width(my->pixbuf2);
+		int pix_height = gdk_pixbuf_get_height(my->pixbuf2);
+		gdk_cairo_set_source_pixbuf(cr,my->pixbuf2,0,0);
+		if (my->clip_image == FALSE) {
+			cairo_rectangle (cr, 0.0, 0.0, pix_width, pix_height);
+			cairo_fill (cr);
+		}
+	}
+	
 	if(my->game->state == GS_HELLO)
 	{
 		draw_title (my, cr);
 	}
 	else {
-		
-		if((my->pixbuf2 != NULL) && ( my->bsp_mode != BSP_CLIP ) ){
-			int pix_width = gdk_pixbuf_get_width(my->pixbuf2);
-			int pix_height = gdk_pixbuf_get_height(my->pixbuf2);
-			gdk_cairo_set_source_pixbuf(cr,my->pixbuf2,0,0);
-			if (my->clip_image == FALSE) {
-				cairo_rectangle (cr, 0.0, 0.0, pix_width, pix_height);
-				cairo_fill (cr);
-			}
-		}
 		
 		PangoLayout *layout = pango_cairo_create_layout (cr);
 		
@@ -720,7 +715,7 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
 		{
 			draw_score (cr, my);
 			draw_train_tracks (cr, my);
-			draw_canon (cr, my);
+			//draw_canon (cr, my);
 			draw_shots (cr, my);
 			draw_train_marbles (cr, my);
 			
