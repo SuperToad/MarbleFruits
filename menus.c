@@ -199,7 +199,7 @@ void on_item_about_activate (GtkWidget *widget, gpointer data)
 {
 	Mydata *my = get_mydata(data);
 	
-	char *auteurs[] = {"Les branlos de l'Xtreme <rpzarles@chika.com>", "DUFFAUT Julien <super-toad@hotmail.fr>", "PASTOR Jean-Baptiste <tigerdu13@hotmail.fr>", NULL};
+	char *auteurs[] = {"DUFFAUT Julien <julien.duffaut@etu.univ-amu.fr>", "PASTOR Jean-Baptiste <jb.pastor@outlook.fr>", NULL};
 	
 	gtk_show_about_dialog(NULL,
 			"program-name", my->title,
