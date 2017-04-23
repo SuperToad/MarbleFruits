@@ -17,13 +17,11 @@ Il est possible d'utiliser la commande "make clean" pour supprimer les fichiers 
 
 	Utilisation du programme : 
 
-Une fois le programme exécuté la fenêtre s'ouvre avec seulement le canon. 
+Une fois le programme exécuté la fenêtre d'accueil s'ouvre. 
 Pour lancer le jeu cliquez sur le premier menu déroulant "Game" puis cliquez sur l'élément du menu "Start".
 
-Si vous souhaitez éditer un niveau alors dans ce cas cliquez sur le menu "Level" puis "Edit". A la fin de l'édition de votre niveau n'oubliez pas de l'enregistrer.
-Pour ce faire retournez sur le menu "Game" puis cliquez sur "Save".
-
-Sur notre jeu l'image de fond est personnalisable pour ce faire, il faut cliquer sur "Game" puis "Load BG" et là vous parcourez vos fichiers afin de choisir le fond que vous souhaitez.
+Si vous souhaitez éditer le  niveau sur lequel vous êtes alors dans ce cas cliquez sur le menu "Level" puis "Edit". A la fin de l'édition de votre niveau n'oubliez pas de l'enregistrer. Pour ce faire retournez sur le menu "Level" puis cliquez sur "Save".
+Pour créer un nouveau niveau cliquez sur l'élément "New" du menu.
 
 Il est possible de rajouter un nouveau niveau au jeu en utilisant "New" dans le sous-menu "Level". N'oubliez pas de sauvegarder le niveau créée.
 
@@ -42,4 +40,7 @@ Certaines des consignes n'ont pas pues être respectées :
 
 	Les parties intéressantes du programme :
 
-Pour nous la partie sur l'utilisation des memmove a été la plus intéressante car on ne connaissait pas l'utilisation de cette méthode et cela nous a permis d'avoir un moyen de manipuler la mémoire.
+- La gestion du canon a été pour nous la partie la plus intéressante et plus amusante à réaliser;
+- L'utilisation des "Memmove" car nous avons du en apprendre l'utilisation et cela nous a donné un moyen de manipuler la mémoire;
+- La réalisation du track pour l'utilisation des outils mathématiques.
+
