@@ -27,7 +27,7 @@ typedef struct {
 	Curve_infos curve_infos;
 	int bsp_mode;
 	int count;
-	cairo_surface_t *canon, *orange, *pomme, *pasteque;
+	cairo_surface_t *logo, *canon, *orange, *pomme, *pasteque;
 	Game *game;
 } Mydata;	  
 

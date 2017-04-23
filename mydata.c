@@ -53,6 +53,8 @@ void init_data(Mydata *data){
 	
 	data->game = malloc (sizeof (Game));
 	
+	data->logo = cairo_image_surface_create_from_png ("./images/logo.png");
+	
 	data->canon = cairo_image_surface_create_from_png ("./images/dk.png");
 	
 	data->orange = cairo_image_surface_create_from_png ("./images/orange.png");

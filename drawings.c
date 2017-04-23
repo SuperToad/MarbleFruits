@@ -679,12 +679,36 @@ void draw_title (Mydata * my, cairo_t *cr)
 		}
 	}
 	
+	// Logo
+	if (my->logo != NULL)
+	{
+		cairo_save (cr);
+		
+		int ima_w = cairo_image_surface_get_width (my->logo),
+		ima_h = cairo_image_surface_get_height (my->logo);
+		
+		int cx = my->win_width/2 - ima_w/2;
+		int cy = my->win_height/2 - ima_h/2;
+		
+		cairo_identity_matrix (cr);
+		cairo_translate (cr, cx + ima_w/2, cy + ima_h/2);
+		/*cairo_rotate (cr, my->game->canon.angle);
+		cairo_scale (cr, 0.4, 0.4);*/
+		cairo_translate (cr, -cx - ima_w/2, -cy - ima_h/2);
+		
+		cairo_set_source_surface (cr, my->logo, cx, cy);
+		cairo_rectangle (cr, cx, cy, ima_w, ima_h);
+		cairo_fill (cr);
+		
+		cairo_restore (cr);
+	}
+	
 	// Noms
 	PangoLayout *layout = pango_cairo_create_layout (cr);
 	font_set_name (layout, "Sans 24");
-	cairo_set_source_rgb(cr, 0.1, 0.3, 0.2);
-	font_draw_text (cr, layout, FONT_TC, my->win_width/2,my->win_height/2 - 50, 
-		"Marble Fruits 2 : Fruits' Revenge\n DUFFAUT Julien \n PASTOR Jean-Baptiste");	
+	cairo_set_source_rgb(cr, 0.4, 0.8, 0.6);
+	font_draw_text (cr, layout, FONT_TC, my->win_width/2,my->win_height - 150, 
+		"DUFFAUT Julien \n PASTOR Jean-Baptiste");	
 }
 
 gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){   
