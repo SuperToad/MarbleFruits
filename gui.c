@@ -51,10 +51,10 @@ void editing_init (Mydata *data) {
 
 	my->frame1 = gtk_frame_new ("Editing");
 
-	char *noms[8] = {"Add curve", "Move curve", "Remove curve", "Add control", 
-					"Move control", "Remove control", "Move clip", "Reset clip"};
+	char *noms[6] = {"Add curve", "Move curve", "Remove curve", "Add control", 
+					"Move control", "Remove control"};
 	
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 6; i++) {
 		my->edit_radios[i] =  gtk_radio_button_new_with_label_from_widget (
 					i == 0 ? NULL : GTK_RADIO_BUTTON(my->edit_radios[0]), noms[i]);
 		g_object_set_data (G_OBJECT(my->edit_radios[i]), "numero", GINT_TO_POINTER(i));
@@ -66,7 +66,7 @@ void editing_init (Mydata *data) {
 
 	gtk_container_add (GTK_CONTAINER (my->frame1), vbox2);
 	
-	GtkWidget *separator = 	gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+	/*GtkWidget *separator = 	gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
 	gtk_container_add (GTK_CONTAINER (my->frame1), separator);
 	
 	char *bsp_noms[5] = {"Opened", "Closed", "Prolongated", "Fill", "Clip image" };
@@ -80,7 +80,7 @@ void editing_init (Mydata *data) {
 		g_signal_connect (my->bsp_radios[i], "toggled", G_CALLBACK(on_bsp_radio_toggled), my);
 		
 		gtk_box_pack_start (GTK_BOX (vbox2), my->bsp_radios[i], FALSE, FALSE, 0);
-	}
+	}*/
 	
 }
 
@@ -102,8 +102,6 @@ void layout_init (gpointer user_data){
 	gtk_box_pack_start (GTK_BOX (my->hbox1), my->scroll, TRUE, TRUE, 0);
 
 	gtk_box_pack_start (GTK_BOX (my->vbox1), my->hbox1, TRUE, TRUE, 0);
-
-	//Area;
 
 	//Status
 	gtk_box_pack_start (GTK_BOX (my->vbox1), my->status, FALSE, FALSE, 0);	

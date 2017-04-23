@@ -76,7 +76,6 @@ void on_item_save_level_activate (GtkWidget *widget, gpointer data){
 	int i, j, control_count;
 	for (i = 0; i < count; i++)
 	{
-		//fprintf(fp, "%f %f\n", my->curve_infos.curve_list.curves[i].shift_x,  my->curve_infos.curve_list.curves[i].shift_y);
 		control_count = my->curve_infos.curve_list.curves[i].control_count;
 		fprintf(fp, "%d\n", control_count);
 		for (j = 0; j < control_count; j++)
@@ -141,15 +140,14 @@ void on_item_load_level_activate (GtkWidget *widget, gpointer data){
 	if (file != NULL)
 	{
 		int i, j, n;
-		//Supression curves courantes
+		// Supression curves courantes
 		for (i = 0; i < my->game->track_list.track_count; i++)
 		{
 			n = find_control (&my->curve_infos, my->curve_infos.curve_list.curves[i].controls[0].x, my->curve_infos.curve_list.curves[i].controls[0].y);
 			if (n == 0) remove_curve (&my->curve_infos);
 		}
-			//remove_curve (&my->curve_infos);
 		
-		//Ajout curves
+		// Ajout curves et controls
 		int curve_count, control_count;
 		double x, y;
 		if (fscanf(file, "%d", &curve_count) != 1)
@@ -169,6 +167,8 @@ void on_item_load_level_activate (GtkWidget *widget, gpointer data){
 			}
 		}
 		curve_count += x + y + control_count;
+		
+		// Chargement du niveau
 		load_bg (my);
 		set_status(my->status, "New level starting.");
 		init_track (my->game, &my->curve_infos);
@@ -186,9 +186,12 @@ void on_item_new_level_activate (GtkWidget *widget, gpointer data){
 	set_status(my->status, str);
 	
 	//Supression curves courantes
-	int i;
+	int i, n;
 	for (i = 0; i < my->game->track_list.track_count; i++)
-		remove_curve (&my->curve_infos);
+	{
+		n = find_control (&my->curve_infos, my->curve_infos.curve_list.curves[i].controls[0].x, my->curve_infos.curve_list.curves[i].controls[0].y);
+		if (n == 0) remove_curve (&my->curve_infos);
+	}
 	my->game->track_list.track_count = 0;
 }
 

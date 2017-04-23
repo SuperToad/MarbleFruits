@@ -178,7 +178,6 @@ void draw_train_tracks (cairo_t *cr, Mydata *my)
 	int count = my->game->track_list.track_count;
 	for (i = 0; i < count; i++)
 	{
-		//Track t = my->game->track_list.tracks[i];
 		for (w = width; w >= 0; w -= 4)
 		{
 			cairo_set_source_rgb (cr, color, color, color);
@@ -208,7 +207,6 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 
 	int count = my->game->track_list.track_count;
 	int diameter = my->game->diameter;
-	//PangoLayout *layout = pango_cairo_create_layout (cr);
 	int marble_count, first_visible;
 	for (i = 0; i < count; i++)
 	{
@@ -262,13 +260,12 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 
 void draw_score (cairo_t *cr, Mydata *my)
 {
-	
 	PangoLayout *layout = pango_cairo_create_layout (cr);
 	
-	//cairo_identity_matrix (cr);
 	font_set_name (layout, "Sans 12");
 	cairo_set_source_rgb(cr, 0.2, 0.2, 0.2);
-	font_draw_text (cr, layout, FONT_TC, 50, 0, "Niveau : %d\nScore : %d", my->game->current_level, my->game->score);
+	font_draw_text (cr, layout, FONT_TC, 50, 0, "Niveau : %d\nScore : %d", 
+		(my->game->current_level + 1), my->game->score);
 	
 }
 
@@ -296,13 +293,13 @@ void check_end_of_game (Mydata *my)
 			if (game->current_level > game->level_list.level_count - 1)
 			{
 				game->current_level = 0;
-				game->total_marbles *= 2;
-				game->initial_speed *= 2;
+				game->total_marbles *= 1.5;
+				game->initial_speed *= 1.5;
 			}
 				
 				
 			char s[50];
-			sprintf(s, "You won ! Go to the next level : %d/%d", game->current_level, game->level_list.level_count);
+			sprintf(s, "You won ! Go to the next level : %d/%d", (game->current_level + 1), game->level_list.level_count);
 			set_status(my->status, s);
 		}
 		
@@ -315,10 +312,8 @@ void check_end_of_game (Mydata *my)
 
 			if ( dist_x*dist_x + dist_y*dist_y <= rayon*rayon)
 			{
-				printf ("t : %lf\n", game->track_list.tracks[i].marbles[marble_count - 1].t);
 				printf ("DEFEAT !!!\n");
 				game->state = GS_LOST;
-				//game->current_level = 0;
 				my->game->score = 0;
 				set_status(my->status, "You lost ! Retry your luck ");
 				
@@ -667,8 +662,6 @@ void draw_title (Mydata * my, cairo_t *cr)
 		my->pixbuf1 = gdk_pixbuf_new_from_file(filename, NULL);
 		if (my->pixbuf1 == NULL) { 
 			set_status(my->status, "Loading failed : not an image.");
-			//gtk_image_set_from_icon_name (GTK_IMAGE (my->image1), "image-missing",
-			//							  GTK_ICON_SIZE_DIALOG);
 		}
 		else {
 			my->scale_value = 3.5;
@@ -692,8 +685,6 @@ void draw_title (Mydata * my, cairo_t *cr)
 		
 		cairo_identity_matrix (cr);
 		cairo_translate (cr, cx + ima_w/2, cy + ima_h/2);
-		/*cairo_rotate (cr, my->game->canon.angle);
-		cairo_scale (cr, 0.4, 0.4);*/
 		cairo_translate (cr, -cx - ima_w/2, -cy - ima_h/2);
 		
 		cairo_set_source_surface (cr, my->logo, cx, cy);
@@ -715,7 +706,8 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
 	
 	Mydata *my = get_mydata(data);
 	
-	if((my->pixbuf2 != NULL) && ( my->bsp_mode != BSP_CLIP ) ){
+	if((my->pixbuf2 != NULL) && ( my->bsp_mode != BSP_CLIP ) )
+	{
 		int pix_width = gdk_pixbuf_get_width(my->pixbuf2);
 		int pix_height = gdk_pixbuf_get_height(my->pixbuf2);
 		gdk_cairo_set_source_pixbuf(cr,my->pixbuf2,0,0);
@@ -734,7 +726,6 @@ gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){
 		PangoLayout *layout = pango_cairo_create_layout (cr);
 		
 		draw_canon (cr, my);
-		//draw_bg (cr, my);
 		if (my->game->state != GS_EDIT)
 		{
 			draw_score (cr, my);

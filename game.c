@@ -116,9 +116,7 @@ void move_trains_one_step (Game *game)
 
 		if ( sqrt(dist_x*dist_x + dist_y*dist_y) <= diametre)
 		{
-			printf ("t : %lf\n", game->track_list.tracks[i].marbles[marble_count - 1].t);
-			game->track_list.tracks[i].marble_count--;
-			
+			game->track_list.tracks[i].marble_count--;	
 		}
 		
 		// Pousser les billes apres first_visible
@@ -170,7 +168,6 @@ void move_trains_one_step (Game *game)
 				if ((marble_count - game->track_list.tracks[i].first_visible) > marble_count/2 )
 				{
 					game->speed = game->initial_speed/10.0;
-					printf ("SHOOT\n");
 				}
 					
 			}	
@@ -186,13 +183,17 @@ int check_combo (Game *game, int track_i, int *k, int combo)
 	int color = track->marbles[pos].color;
 	
 	int group_size = 1;
-	
+	// Verification cote droit
 	int cpt_d = pos + 1;
 	while (marbles[cpt_d].color == color && cpt_d < track->marble_count)
 	{
 		group_size++;
 		cpt_d++;
 	}
+	if (cpt_d > track->marble_count)
+		cpt_d = track->marble_count - 1;
+	
+	// Verification cote gauche
 	int cpt_g = pos - 1;
 	while (marbles[cpt_g].color == color && cpt_g >= track->first_visible)
 	{
@@ -202,6 +203,7 @@ int check_combo (Game *game, int track_i, int *k, int combo)
 	if (cpt_g < 0)
 		cpt_g = -1;
 	
+	// Suppresion marbles
 	if (group_size > 2)
 	{
 		printf ("From %d to %d (%d)\n", (cpt_g + 1), (cpt_g + group_size + 1), 
@@ -230,10 +232,10 @@ void check_collisions (Game *game, int i)
 	double sx, sy, nsx, nsy; // shot x, shot y, next shot x, next shot y
 	double mx, my, nmx, nmy; // marble x, marble y, next marble x, next marble y
 	
-	double rsx, rsy, rsz; // result shot x, result shot y, result shot z
-	double rmx, rmy, rmz; // result marble x, result marble y, result marble z
-	double rx, ry, rz; // result x, result y, result z
-	double ix, iy; // intersection x, intersection y
+	double rsx, rsy, rsz;	// result shot x, result shot y, result shot z
+	double rmx, rmy, rmz;	// result marble x, result marble y, result marble z
+	double rx, ry, rz;		// result x, result y, result z
+	double ix, iy;			// intersection x, intersection y
 	
 	for (j = 0; j < count; j++)
 	{
@@ -250,7 +252,7 @@ void check_collisions (Game *game, int i)
 			// Verification de la distance entre les deux billes
 			if ( sqrt(dist_x*dist_x + dist_y*dist_y) < diametre/2)
 			{
-				printf ("Collision at : %lf %lf\n", dist_x, dist_y);
+				printf ("Collision detected\n");
 				
 				nsx = sx + game->shot_list.shots[i].dx*SHOT_SPEED;
 				nsy = sy + game->shot_list.shots[i].dy*SHOT_SPEED;
@@ -338,7 +340,6 @@ void check_collisions (Game *game, int i)
 								game->track_list.tracks[j].marbles[l].x = xB;
 								game->track_list.tracks[j].marbles[l].y = yB;
 								game->track_list.tracks[j].marbles[l].t = result;
-
 							}
 						}
 						game->track_list.tracks[j].marble_count++;
@@ -353,16 +354,14 @@ void check_collisions (Game *game, int i)
 						
 					}
 					
-					//Combo
+					// Calcul combos
 					int group;
 					int combo = 1;
 					do
 					{
-						printf ("k = %d\n", k);
 						group = check_combo (game, j, &k, combo);
 						
-						printf ("Combo = %d Group = %d\n", combo, group);
-						printf ("k = %d\n", k);
+						printf ("Combo = %d Group = %d\nk = %d\n", combo, group, k);
 						
 						// Ajout score
 						if (combo > 1)
@@ -372,7 +371,6 @@ void check_collisions (Game *game, int i)
 					}
 					while (group > 2);
 				}
-				
 				
 			}
 		}
@@ -402,12 +400,10 @@ void suppress_far_shot (Game *game, int w, int h)
 		
 		if ( (x < 0) || (y < 0) || (x > w) || (y > h) )
 		{
-			
 			memmove (game->shot_list.shots + i, game->shot_list.shots + i + 1, 
 				sizeof(Shot)*(game->shot_list.shot_count - i - 1));
 			game->shot_list.shot_count--;
-			
-			printf ("Now %d shot \n", game->shot_list.shot_count);
+
 		}
 		
 	}
@@ -422,9 +418,9 @@ void swap_ammo (Game *game)
 
 void init_track (Game *game, Curve_infos *ci)
 {
-	//initialiser curve selon niveau
+	// initialiser curve selon niveau
 	
-	//echantilloner courbe B spline cubique uniforme prolongee
+	// echantilloner courbe B spline cubique uniforme prolongee
 	int count = ci->curve_list.curve_count;
 	
 	game->track_list.track_count = count;
@@ -434,9 +430,6 @@ void init_track (Game *game, Curve_infos *ci)
 	{
 		Track trackInit;
 		game->track_list.tracks[i] = trackInit;
-		//Track * track = &game->track_list.tracks[0];
-		/*Curve_infos ci;
-		init_curve_infos (&ci);*/
 		
 		sample_curve_to_track (&ci->curve_list.curves[i], &game->track_list.tracks[i], 0.1);
 		game->track_list.tracks[i].marble_count = game->total_marbles/count;
@@ -465,10 +458,8 @@ void init_track (Game *game, Curve_infos *ci)
 void progress_game_next_step (Game *game, int w, int h)
 {
 	suppress_far_shot (game, w, h);
-	move_shot_one_step (game);
-	//~ process_shots_collisions
+	move_shot_one_step (game); // detection des collisions a l'interieur
 	move_trains_one_step (game);
-	//check_end_of_game (game);
 }
 
 
