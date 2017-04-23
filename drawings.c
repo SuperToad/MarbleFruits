@@ -360,7 +360,8 @@ gboolean on_area1_key_press (GtkWidget *area, GdkEvent *event, gpointer data){
 		case GDK_KEY_t : set_edit_mode (my, EDIT_MOVE_CONTROL); break;
 		case GDK_KEY_y : set_edit_mode (my, EDIT_REMOVE_CONTROL); break;
 		case GDK_KEY_space : if (my->game->state == GS_PLAYING) swap_ammo (my->game); break;
-		case GDK_KEY_p : my->game->state =(my->game->state == GS_PLAYING)?  GS_PAUSE : GS_PLAYING; break;
+		case GDK_KEY_p : if ( (my->game->state != GS_WON) && (my->game->state != GS_LOST) && (my->game->state != GS_HELLO) ) {
+			my->game->state =(my->game->state == GS_PLAYING)?  GS_PAUSE : GS_PLAYING; } break;
 	}
 	return TRUE;  // evenement traite
 }
@@ -656,16 +657,48 @@ void draw_bezier_curves_clip(cairo_t *cr, Curve_infos *ci, double theta, Mydata 
     }
 }
 
+void draw_title (Mydata * my, cairo_t *cr)
+{
+	// Background
+	/*if (my->pixbuf1 == NULL)
+	{*/
+		char *filename = "./images/BG_night.png";
+		set_status(my->status, "Loading image ...");
+		g_clear_object(&my->pixbuf1);
+		my->pixbuf1 = gdk_pixbuf_new_from_file(filename, NULL);
+		if (my->pixbuf1 == NULL) { 
+			set_status(my->status, "Loading failed : not an image.");
+			//gtk_image_set_from_icon_name (GTK_IMAGE (my->image1), "image-missing",
+			//							  GTK_ICON_SIZE_DIALOG);
+		}
+		else {
+			char str[80];
+			sprintf(str, "Loading success : image %dx%d.", gdk_pixbuf_get_width(my->pixbuf1),
+														 gdk_pixbuf_get_height(my->pixbuf1));
+			
+			set_status(my->status, str);
+			my->scale_value = 3.5;
+			my->rotate_angle = 0.0;
+			apply_image_transforms (my);
+			
+			refresh_area (my->area1);
+		}
+	//}
+	
+	// Noms
+	PangoLayout *layout = pango_cairo_create_layout (cr);
+	font_set_name (layout, "Sans 24");
+	cairo_set_source_rgb(cr, 0.3, 0.6, 0.4);
+	font_draw_text (cr, layout, FONT_TC,400,250, "Marble Fruits 2 : Fruits' Revenge\n DUFFAUT Julien \n PASTOR Jean-Baptiste");	
+}
+
 gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){   
 	
 	Mydata *my = get_mydata(data);
 	
 	if(my->game->state == GS_HELLO)
 	{
-			PangoLayout *layout = pango_cairo_create_layout (cr);
-			font_set_name (layout, "Sans 24");
-			cairo_set_source_rgb(cr, 0.3, 0.6, 0.4);
-			font_draw_text (cr, layout, FONT_TC,400,250, "Marble Fruits 2 : Fruits' Revenge\n DUFFAUT Julien \n PASTOR Jean-Baptiste");	
+		draw_title (my, cr);
 	}
 	else {
 		
@@ -735,6 +768,8 @@ void area1_init (gpointer user_data){
 							GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK );
 	
 	gtk_widget_set_can_focus (my->area1, TRUE);
+	
+
 }
 
 

@@ -247,11 +247,10 @@ void on_item_edit_activate (GtkCheckMenuItem *widget, gpointer data){
 
 void on_item_pause_activate (GtkCheckMenuItem *widget, gpointer data){
     Mydata *my = get_mydata(data);	
-
-    if (my->game->state == GS_PAUSE)
-         my->game->state = GS_PLAYING;
-    else 
-        my->game->state = GS_PAUSE;
+	if ( (my->game->state != GS_WON) && (my->game->state != GS_LOST) && (my->game->state != GS_HELLO) )
+	{
+		my->game->state =(my->game->state == GS_PLAYING)?  GS_PAUSE : GS_PLAYING;
+	}
 	
     refresh_area (my->area1);
 }
