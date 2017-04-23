@@ -252,9 +252,7 @@ void draw_train_marbles (cairo_t *cr, Mydata *my)
 				cairo_fill (cr);
 				
 				cairo_identity_matrix (cr);
-				/*font_set_name (layout, "Sans 8");
-				cairo_set_source_rgb(cr, 0.4, 0.4, 0.4);
-				font_draw_text (cr, layout, FONT_TC, x + diameter/2, y - 10, "%d", j);*/
+				
 			}	
 		}
 	}
@@ -661,39 +659,49 @@ void draw_bezier_curves_clip(cairo_t *cr, Curve_infos *ci, double theta, Mydata 
 gboolean on_area1_draw (GtkWidget *area, cairo_t *cr, gpointer data){   
 	
 	Mydata *my = get_mydata(data);
-	if((my->pixbuf2 != NULL) && ( my->bsp_mode != BSP_CLIP ) ){
-        int pix_width = gdk_pixbuf_get_width(my->pixbuf2);
-        int pix_height = gdk_pixbuf_get_height(my->pixbuf2);
-        gdk_cairo_set_source_pixbuf(cr,my->pixbuf2,0,0);
-        if (my->clip_image == FALSE) {
-            cairo_rectangle (cr, 0.0, 0.0, pix_width, pix_height);
-            cairo_fill (cr);
-        }
-    }
-    
-    PangoLayout *layout = pango_cairo_create_layout (cr);
-    
-    draw_canon (cr, my);
-    //draw_bg (cr, my);
-	if (my->game->state != GS_EDIT)
-	{
-		draw_score (cr, my);
-		draw_train_tracks (cr, my);
-		draw_canon (cr, my);
-		draw_shots (cr, my);
-		draw_train_marbles (cr, my);
-		
-	}
-	else
-	{
-		draw_control_polygons (cr, &my->curve_infos);
-		draw_control_labels (cr, layout, &my->curve_infos);
-		draw_bezier_polygon_open (cr, &my->curve_infos);
-		draw_bezier_curves_prolong (cr, &my->curve_infos, 0.1);
-	}
 	
+	if(my->game->state == GS_HELLO)
+	{
+			PangoLayout *layout = pango_cairo_create_layout (cr);
+			font_set_name (layout, "Sans 24");
+			cairo_set_source_rgb(cr, 0.3, 0.6, 0.4);
+			font_draw_text (cr, layout, FONT_TC,400,250, "Marble Fruits 2 : Fruits' Revenge\n DUFFAUT Julien \n PASTOR Jean-Baptiste");	
+	}
+	else {
+		
+		if((my->pixbuf2 != NULL) && ( my->bsp_mode != BSP_CLIP ) ){
+			int pix_width = gdk_pixbuf_get_width(my->pixbuf2);
+			int pix_height = gdk_pixbuf_get_height(my->pixbuf2);
+			gdk_cairo_set_source_pixbuf(cr,my->pixbuf2,0,0);
+			if (my->clip_image == FALSE) {
+				cairo_rectangle (cr, 0.0, 0.0, pix_width, pix_height);
+				cairo_fill (cr);
+			}
+		}
+		
+		PangoLayout *layout = pango_cairo_create_layout (cr);
+		
+		draw_canon (cr, my);
+		//draw_bg (cr, my);
+		if (my->game->state != GS_EDIT)
+		{
+			draw_score (cr, my);
+			draw_train_tracks (cr, my);
+			draw_canon (cr, my);
+			draw_shots (cr, my);
+			draw_train_marbles (cr, my);
+			
+		}
+		else
+		{
+			draw_control_polygons (cr, &my->curve_infos);
+			draw_control_labels (cr, layout, &my->curve_infos);
+			draw_bezier_polygon_open (cr, &my->curve_infos);
+			draw_bezier_curves_prolong (cr, &my->curve_infos, 0.1);
+	}
+
 	g_object_unref (layout);
-    
+ }   
     return TRUE;
 }
 /*
