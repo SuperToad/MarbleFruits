@@ -40,6 +40,6 @@ Certaines des consignes n'ont pas pues être respectées :
 - Le menu d'édition de permet pas de changer le nombre de marbles ni leur vitesse
 
 
-  Les parties intéressantes du programme :
+	Les parties intéressantes du programme :
 
 Pour nous la partie sur l'utilisation des memmove a été la plus intéressante car on ne connaissait pas l'utilisation de cette méthode et cela nous a permis d'avoir un moyen de manipuler la mémoire.
